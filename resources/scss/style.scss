@@ -1,0 +1,317 @@
+@import './variables';
+@import "~element-ui/packages/theme-chalk/src";
+@import "~element-ui/lib/theme-chalk/display.css";
+@import "~@fortawesome/fontawesome-free/scss/fontawesome";
+
+body {
+    margin: 0;
+    font-family: "SF Pro Display", sans-serif;
+    color: $--color-text-regular;
+}
+
+:focus {
+    outline: none;
+}
+
+/* Color */
+
+.color-primary {
+    color: $--color-primary
+}
+
+.color-white {
+    color: $--color-white
+}
+
+.color-black {
+    color: $--color-black
+}
+
+.color-primary-light-1 {
+    color: $--color-primary-light-1
+}
+
+.color-primary-light-2 {
+    color: $--color-primary-light-2
+}
+
+.color-primary-light-3 {
+    color: $--color-primary-light-3
+}
+
+.color-primary-light-4 {
+    color: $--color-primary-light-4
+}
+
+.color-primary-light-5 {
+    color: $--color-primary-light-5
+}
+
+.color-primary-light-6 {
+    color: $--color-primary-light-6
+}
+
+.color-primary-light-7 {
+    color: $--color-primary-light-7
+}
+
+.color-primary-light-8 {
+    color: $--color-primary-light-8
+}
+
+.color-primary-light-9 {
+    color: $--color-primary-light-9
+}
+
+.color-success {
+    color: $--color-success
+}
+
+.color-warning {
+    color: $--color-warning
+}
+
+.color-danger {
+    color: $--color-danger
+}
+
+.color-info {
+    color: $--color-info
+}
+
+.color-success-light {
+    color: $--color-success-light
+}
+
+.color-warning-light {
+    color: $--color-warning-light
+}
+
+.color-danger-light {
+    color: $--color-danger-light
+}
+
+.color-info-light {
+    color: $--color-info-light
+}
+
+.color-success-lighter {
+    color: $--color-success-lighter
+}
+
+.color-warning-lighter {
+    color: $--color-warning-lighter
+}
+
+.color-danger-lighter {
+    color: $--color-danger-lighter
+}
+
+.color-info-lighter {
+    color: $--color-info-lighter
+}
+
+.color-text-primary {
+    color: $--color-text-primary
+}
+
+.color-text-regular {
+    color: $--color-text-regular
+}
+
+.color-text-secondary {
+    color: $--color-text-secondary
+}
+
+.color-text-placeholder {
+    color: $--color-text-placeholder
+}
+
+/* Background */
+.bg-primary {
+    background: $--color-primary
+}
+
+.bg-white {
+    background: $--color-white
+}
+
+.bg-black {
+    background: $--color-black
+}
+
+.bg-primary-light-1 {
+    background: $--color-primary-light-1
+}
+
+.bg-primary-light-2 {
+    background: $--color-primary-light-2
+}
+
+.bg-primary-light-3 {
+    background: $--color-primary-light-3
+}
+
+.bg-primary-light-4 {
+    background: $--color-primary-light-4
+}
+
+.bg-primary-light-5 {
+    background: $--color-primary-light-5
+}
+
+.bg-primary-light-6 {
+    background: $--color-primary-light-6
+}
+
+.bg-primary-light-7 {
+    background: $--color-primary-light-7
+}
+
+.bg-primary-light-8 {
+    background: $--color-primary-light-8
+}
+
+.bg-primary-light-9 {
+    background: $--color-primary-light-9
+}
+
+.bg-success {
+    background: $--color-success
+}
+
+.bg-warning {
+    background: $--color-warning
+}
+
+.bg-danger {
+    background: $--color-danger
+}
+
+.bg-info {
+    background: $--color-info
+}
+
+.bg-success-light {
+    background: $--color-success-light
+}
+
+.bg-warning-light {
+    background: $--color-warning-light
+}
+
+.bg-danger-light {
+    background: $--color-danger-light
+}
+
+.bg-info-light {
+    background: $--color-info-light
+}
+
+.bg-success-lighter {
+    background: $--color-success-lighter
+}
+
+.bg-warning-lighter {
+    background: $--color-warning-lighter
+}
+
+.bg-danger-lighter {
+    background: $--color-danger-lighter
+}
+
+.bg-info-lighter {
+    background: $--color-info-lighter
+}
+
+.bg-text-primary {
+    background: $--color-text-primary
+}
+
+.bg-text-regular {
+    background: $--color-text-regular
+}
+
+.bg-text-secondary {
+    background: $--color-text-secondary
+}
+
+.bg-text-placeholder {
+    background: $--color-text-placeholder
+}
+
+.fz-extra-large {
+    font-size: $--font-size-extra-large
+}
+
+.fz-large {
+    font-size: $--font-size-large
+}
+
+.fz-medium {
+    font-size: $--font-size-medium
+}
+
+.fz-base {
+    font-size: $--font-size-base
+}
+
+.fz-small {
+    font-size: $--font-size-small
+}
+
+.fz-extra-small {
+    font-size: $--font-size-extra-small
+}
+
+.fw-primary {
+    font-weight: $--font-weight-primary
+}
+
+.fw-secondary {
+    font-weight: $--font-weight-secondary
+}
+
+.lh-primary {
+    line-height: $--font-line-height-primary
+}
+
+.lh-secondary {
+    line-height: $--font-line-height-secondary
+}
+
+// display
+
+.d-block {
+    display: block;
+}
+
+.d-inline {
+    display: inline;
+}
+
+.d-inline-block {
+    display: inline-block;
+}
+
+// text-align
+
+.text-right {
+    text-align: right;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.ov-h {
+    overflow: hidden;
+}
+
+.clickable {
+    cursor: pointer;
+}

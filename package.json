@@ -29,8 +29,6 @@
         "@vue/cli-plugin-vuex": "^4.1.0",
         "@vue/cli-service": "^4.1.0",
         "babel-eslint": "^10.0.3",
-        "eslint": "^5.16.0",
-        "eslint-plugin-vue": "^5.0.0",
         "cross-env": "^7.0",
         "laravel-mix": "^5.0.1",
         "resolve-url-loader": "^2.3.1",
@@ -38,29 +36,5 @@
         "sass-loader": "^8.0.0",
         "vue": "^2.5.17",
         "vue-template-compiler": "^2.6.10"
-    },
-    "eslintConfig": {
-        "root": true,
-        "env": {
-            "node": true
-        },
-        "extends": [
-            "plugin:vue/essential",
-            "eslint:recommended"
-        ],
-        "rules": {
-            "no-console": "off"
-        },
-        "parserOptions": {
-            "parser": "babel-eslint"
-        },
-        "globals": {
-            "console": "readonly",
-            "_": "readonly"
-        }
-    },
-    "browserslist": [
-        "> 1%",
-        "last 2 versions"
-    ]
+    }
 }

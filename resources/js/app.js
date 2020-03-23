@@ -1,10 +1,12 @@
-require('./bootstrap');
+import Vue from 'vue';
 
-window.Vue = require('vue');
+import './bootstrap';
 
 import router from './router';
 import store from './store';
 import Layout from './pages/Layout';
+
+import '../scss/style.scss';
 
 new Vue({
     router,
