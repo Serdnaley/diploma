@@ -28,7 +28,7 @@ window.axios = axios;
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 axios.defaults.headers.common['Authorization'] = 'Bearer ' + Cookies.get('Token');
-axios.defaults.baseURL = `/api/v1`;
+axios.defaults.baseURL = `/api/`;
 
 Vue.use(VueAxios, axios);
 Vue.use(VueAuth, auth);
