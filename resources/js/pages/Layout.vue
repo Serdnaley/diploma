@@ -32,7 +32,9 @@
             </el-tabs>
         </el-aside>
         <el-main class="main">
-            <router-view/>
+            <router-view
+                v-if="$auth.ready()"
+            />
         </el-main>
     </el-row>
 </template>
@@ -47,6 +49,10 @@
 
                 ],
             }
+        },
+
+        created() {
+            console.log(this.$auth);
         },
 
         methods: {
@@ -66,8 +72,10 @@
     .layout {
         display: flex;
         height: 100vh;
+        padding-bottom: 100px;
 
         .aside {
+            position: fixed;
             height: 100%;
             box-shadow: $--box-shadow-dark;
 
@@ -127,7 +135,8 @@
         }
 
         .main {
-            padding: 40px 30px 100px 80px;
+            padding: 40px 30px 100px 380px;
+            overflow: visible;
 
             h1 {
                 text-transform: uppercase;
