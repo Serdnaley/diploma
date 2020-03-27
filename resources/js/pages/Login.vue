@@ -10,7 +10,7 @@
             this.$auth.login({
 
                 params: {
-                    email: 'admin@admin.com',
+                    email: 'serdnaley@gmail.com',
                     password: 'password',
                 },
 
