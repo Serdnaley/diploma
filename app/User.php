@@ -54,9 +54,10 @@ class User extends Authenticatable implements JWTSubject
         'first_name',
         'last_name',
         'patronymic',
+        'user_category_id',
         'role',
         'email',
-        'password',
+//        'password',
     ];
 
     /**
@@ -66,7 +67,6 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $roles = [
         'admin',
-        'manager',
         'user',
     ];
 
