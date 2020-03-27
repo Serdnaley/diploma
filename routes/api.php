@@ -30,7 +30,8 @@ Route::group([
         });
     });
 
-    Route::apiResource('categories', 'UserCategoryController');
+    Route::apiResource('user', 'UserController');
+    Route::apiResource('category', 'UserCategoryController');
     Route::apiResource('report', 'UserCategoryController');
 
 
