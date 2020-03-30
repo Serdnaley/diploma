@@ -9,8 +9,9 @@ body {
     color: $--color-text-regular;
 }
 
-:focus {
-    outline: none;
+:focus, .is-focus {
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 /* Color */
@@ -314,4 +315,117 @@ body {
 
 .clickable {
     cursor: pointer;
+}
+
+.stylized-tabs {
+
+    .el-tabs {
+        &__header {
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        &__nav-wrap {
+            margin: 0;
+
+            &::after {
+                display: none;
+            }
+        }
+
+        &__item {
+            position: relative;
+            padding: 5px 30px 5px 0;
+            height: auto;
+            line-height: 2em;
+
+            &::after {
+                content: '';
+                display: block;
+            }
+        }
+
+        &__active-bar {
+            transition: width 0.3s cubic-bezier(0.645, 0.045, 0.355, 1),
+            transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+        }
+    }
+
+    .el-tab-pane {
+        margin-top: 15px;
+    }
+}
+
+.el-notification {
+    &__group {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    &__title {
+        font-weight: $--font-weight-primary;
+    }
+}
+
+.el-alert {
+
+    &__icon {
+        font-size: $--font-size-extra-large;
+        width: 1em;
+    }
+
+    &__title {
+        display: block;
+        font-size: $--font-size-medium;
+        line-height: $--font-line-height-secondary;
+        word-break: normal;
+    }
+}
+
+.entities-list {
+
+    &__head {
+        background: $--color-info-light;
+        margin-top: 30px;
+
+        .el-card {
+            &__body {
+                padding: 10px 20px;
+            }
+        }
+    }
+
+    &__group {
+        position: relative;
+
+        &-title {
+            position: sticky;
+            top: 0;
+            padding: 25px 0 5px 0;
+            border-bottom: 2px solid $--color-text-regular;
+            color: $--color-text-regular;
+            background: $--color-white;
+            font-size: $--font-size-medium;
+            font-weight: 600;
+            z-index: 2;
+            text-transform: uppercase;
+        }
+
+        &-items {
+            margin-top: 15px;
+        }
+
+        &-item {
+            margin-bottom: 15px;
+        }
+    }
+
+    &__no-items {
+        min-height: 150px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: $--color-text-placeholder;
+    }
 }

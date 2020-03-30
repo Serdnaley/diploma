@@ -11,31 +11,17 @@
         >
             <el-tabs
                 v-model="filter_data.active_tab"
-                class="tabs"
+                class="stylized-tabs"
             >
                 <el-tab-pane
                     label="Флюрография"
                     name="fluorography"
+                    style="margin: 0;"
                 />
                 <el-tab-pane
                     label="Медкомиссия"
                     name="medical_board"
-                />
-            </el-tabs>
-
-            <div class="header-divider"/>
-
-            <el-tabs
-                v-model="filter_data.group_by"
-                class="tabs"
-            >
-                <el-tab-pane
-                    label="По месяцам"
-                    name="month"
-                />
-                <el-tab-pane
-                    label="По дням"
-                    name="day"
+                    style="margin: 0;"
                 />
             </el-tabs>
 
@@ -52,35 +38,36 @@
 
         </el-row>
 
-        <el-card shadow="never" class="list__head">
-            <el-row>
-                <el-col :span="12">
-                    ФИО
-                </el-col>
-                <el-col :span="4">
-                    Дата
-                </el-col>
-                <el-col :span="4">
-                    Статус
-                </el-col>
-                <el-col :span="4">
-                    Кол.фото
-                </el-col>
-            </el-row>
-        </el-card>
+        <div class="entities-list">
 
-        <div class="list">
+            <el-card shadow="never" class="entities-list__head">
+                <el-row>
+                    <el-col :span="12">
+                        ФИО
+                    </el-col>
+                    <el-col :span="4">
+                        Дата
+                    </el-col>
+                    <el-col :span="4">
+                        Статус
+                    </el-col>
+                    <el-col :span="4">
+                        Кол.фото
+                    </el-col>
+                </el-row>
+            </el-card>
+
             <div
-                class="list__group"
+                class="entities-list__group"
                 v-for="group in filter_data.group_by === 'month' ? reports_grouped_by_month : reports_grouped_by_date"
                 :key="group.created_at"
             >
-                <div class="list__group-title">
+                <div class="entities-list__group-title">
                     {{ formatGroupTitle(group) }}
                 </div>
-                <div class="list__group-items">
+                <div class="entities-list__group-items">
                     <div
-                        class="list__group-item"
+                        class="entities-list__group-item"
                         v-for="report in group.items"
                         :key="report.id"
                     >
@@ -133,13 +120,6 @@
             }
         },
 
-        mounted() {
-            axios({
-                url: 'some',
-                method: 'get'
-            });
-        },
-
         computed: {
             ...mapGetters(['reports_grouped_by_month', "reports_grouped_by_date"]),
         },
@@ -157,7 +137,7 @@
 </script>
 
 <style lang="scss">
-    @import '../../scss/variables';
+    @import '../../../scss/variables';
 
     .history {
 
@@ -172,83 +152,9 @@
             margin: 0 30px;
         }
 
-        .tabs {
-            display: flex;
-            text-transform: uppercase;
-
-            .el-tabs {
-                &__header {
-                    margin: 0;
-                }
-
-                &__nav-wrap {
-                    margin: 0;
-
-                    &::after {
-                        display: none;
-                    }
-                }
-
-                &__item {
-                    position: relative;
-                    padding: 5px 30px 5px 0;
-                    height: auto;
-                    line-height: 2em;
-
-                    &::after {
-                        content: '';
-                        display: block;
-                    }
-                }
-
-                &__active-bar {
-                    transition: width 0.3s cubic-bezier(0.645, 0.045, 0.355, 1),
-                    transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
-                }
-            }
-        }
-
         .date-range.el-input__inner:not(:hover):not(:focus):not(.is-active) {
             border-color: transparent;
         }
 
-        .list {
-
-            &__head {
-                background: $--color-info-light;
-                margin-top: 30px;
-
-                .el-card {
-                    &__body {
-                        padding: 10px 20px;
-                    }
-                }
-            }
-
-            &__group {
-                position: relative;
-
-                &-title {
-                    position: sticky;
-                    top: 0;
-                    padding: 25px 0 5px 0;
-                    border-bottom: 2px solid $--color-text-regular;
-                    color: $--color-text-regular;
-                    background: $--color-white;
-                    font-size: $--font-size-medium;
-                    font-weight: 600;
-                    z-index: 2;
-                    text-transform: uppercase;
-                }
-
-                &-items {
-                    margin-top: 15px;
-                }
-
-                &-item {
-                    margin-bottom: 15px;
-                }
-            }
-        }
     }
 </style>

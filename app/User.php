@@ -89,6 +89,11 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
     ];
 
+    protected $appends = [
+        'full_name',
+        'short_name',
+    ];
+
     public function category() {
         return $this->belongsTo(UserCategory::class);
     }
@@ -115,7 +120,20 @@ class User extends Authenticatable implements JWTSubject
      *
      * @return string
      */
-    public function getNameAttribute() {
+    public function getFullNameAttribute() {
+        return join(' ', [
+            $this->last_name,
+            $this->first_name,
+            $this->patronymic
+        ]);
+    }
+
+    /**
+     * User full name
+     *
+     * @return string
+     */
+    public function getShortNameAttribute() {
         if ( $this->first_name ) {
             if ( $this->last_name ) {
                 return $this->first_name . ' ' . $this->last_name;

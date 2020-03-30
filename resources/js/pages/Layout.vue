@@ -1,11 +1,16 @@
 <template>
-    <el-row class="layout">
+    <el-row
+        v-if="$auth.ready()"
+        class="layout"
+    >
         <el-aside class="aside">
             <div class="aside__profile">
                 <i class="aside__profile-icon el-icon-user"/>
                 <div>
-                    Карпенко Томара
-                    <br>Ивановна
+                    {{ $auth.user().last_name }}
+                    {{ $auth.user().first_name }}
+                    <br>
+                    {{ $auth.user().patronymic }}
                 </div>
                 <el-button
                     type="text"
@@ -19,23 +24,20 @@
             <el-tabs
                 tab-position="left"
                 class="aside__menu"
+                v-model="active_index"
             >
                 <el-tab-pane
-                    label="Пользователи"
-                />
-                <el-tab-pane
-                    label="Добавить"
-                />
-                <el-tab-pane
-                    label="Настройки"
+                    v-for="(item, index) in menu"
+                    :key="index"
+                    :label="item.name"
                 />
             </el-tabs>
         </el-aside>
+
         <el-main class="main">
-            <router-view
-                v-if="$auth.ready()"
-            />
+            <router-view/>
         </el-main>
+
     </el-row>
 </template>
 
@@ -45,23 +47,68 @@
 
         data() {
             return {
-                data: [
-
+                menu: [
+                    {
+                        name: 'Цикловые комиссии',
+                        route: {name: 'Categories'},
+                    },
+                    {
+                        name: 'Пользователи',
+                        route: {name: 'Users'},
+                    },
+                    {
+                        name: 'Отчеты',
+                        route: {name: 'Reports'},
+                    },
+                    {
+                        name: 'Настройки',
+                        route: {name: 'Settings'},
+                    },
                 ],
+                active_index: 0,
             }
         },
 
-        created() {
-            console.log(this.$auth);
+        watch: {
+            $route: {
+                handler() {
+                    this.handleRouteChange();
+                },
+                immediate: true,
+            },
+
+            active_index(index) {
+                let item = this.menu[+index];
+                if (item && item.route && this.$route.name !== item.route.name) {
+                    this.$router.push(item.route);
+                }
+            },
         },
 
         methods: {
+            handleRouteChange() {
+                for (let index in this.menu) {
+
+                    if (!this.menu.hasOwnProperty(index)) continue;
+
+                    let needed = this.menu[index].route.name;
+                    let reversedRoute = _.clone(this.$route.matched).reverse();
+
+                    if (reversedRoute.some(({name}) => name && name === needed)) {
+                        this.active_index = index;
+                    }
+                }
+            },
+
             exit() {
-                this.$confirm('Вы действительно хотите выйти из системы?', {
-                    confirmButtonText: 'Выйти',
-                    cancelButtonText: 'Нет',
-                });
-            }
+                this
+                    .$confirm('Вы действительно хотите выйти из системы?', {
+                        confirmButtonText: 'Выйти',
+                        cancelButtonText: 'Нет',
+                    })
+                    .then(() => this.$auth.logout())
+                    .catch(_.noop)
+            },
         },
     }
 </script>
@@ -137,6 +184,7 @@
         .main {
             padding: 40px 30px 100px 380px;
             overflow: visible;
+            min-height: 100vh;
 
             h1 {
                 text-transform: uppercase;
