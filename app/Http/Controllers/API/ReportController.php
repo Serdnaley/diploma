@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Report;
 use App\User;
 use App\UserFile;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
@@ -24,9 +25,12 @@ class ReportController extends Controller
 
         $users = User::all();
 
+        $from = Carbon::parse($request->from)->addYears(-1);
+        $to = Carbon::parse($request->to);
+
         $reports = Report::with(['attachments'])
-            ->whereDate('date', '>=', $request->from->addYear(-1))
-            ->whereDate('date', '<=', $request->to)
+            ->whereDate('date', '>=', $from)
+            ->whereDate('date', '<=', $to)
             ->latest()->get();
 
         foreach ($users as $user) {
