@@ -15,9 +15,27 @@ class ReportController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
-        $reports = Report::with(['attachments', 'user'])->get();
+        $this->validate($request, [
+            'from' => 'required|date',
+            'to' => 'required|date',
+        ]);
+
+        $users = User::all();
+
+        $reports = Report::with(['attachments', 'user'])->latest()->get();
+
+        foreach ($users as &$user) {
+            $report = $reports->firstWhere('user_id', $user->id);
+
+            if ( $report ) {
+
+            } else {
+                $user->report = null;
+            }
+
+        }
 
         return response()->json($reports->toArray());
     }
