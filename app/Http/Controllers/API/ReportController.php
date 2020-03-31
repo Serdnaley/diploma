@@ -34,11 +34,10 @@ class ReportController extends Controller
         foreach ($users as &$user) {
             $reports = $all_reports->where('user_id', $user->id);
 
-            if ( !$reports ) {
+            if ( $reports->isEmpty() ) {
                 $user->reports = [
                     Report::make([
-                        'user_id' => $user->id,
-                        'status' => 'new'
+                        'user_id' => $user->id
                     ])
                 ];
 
@@ -52,8 +51,7 @@ class ReportController extends Controller
                 while ( $date < $to ) {
                     $reports[] = Report::make([
                         'user_id' => $user->id,
-                        'date' => $date,
-                        'status' => 'fake'
+                        'date' => $date
                     ]);
                 }
             }
