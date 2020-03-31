@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\User;
 use App\UserCategory;
 use Illuminate\Http\Request;
 
@@ -92,7 +93,13 @@ class UserCategoryController extends Controller
             'name' => $request->name
         ]);
 
-        $category->users()->sync($request->user_ids);
+
+        $category->users()->delete();
+
+        if ($request->user_ids) {
+            $users = User::whereIn('id', $request->user_ids)->get();
+            $category->users()->saveMany($users);
+        }
 
         return response()->json($category->toArray());
     }

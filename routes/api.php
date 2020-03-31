@@ -32,7 +32,7 @@ Route::group([
 
     Route::apiResource('user', 'UserController');
     Route::apiResource('category', 'UserCategoryController');
-    Route::apiResource('report', 'UserCategoryController');
+    Route::apiResource('report', 'ReportController');
 
 
     // Редактируем профиль
