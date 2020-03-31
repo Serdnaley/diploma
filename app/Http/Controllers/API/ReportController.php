@@ -24,17 +24,13 @@ class ReportController extends Controller
 
         $users = User::all();
 
-        $reports = Report::with(['attachments', 'user'])->latest()->get();
+        $reports = Report::with(['attachments'])
+            ->whereDate('date', '>=', $request->from->addYear(-1))
+            ->whereDate('date', '<=', $request->to)
+            ->latest()->get();
 
-        foreach ($users as &$user) {
-            $report = $reports->firstWhere('user_id', $user->id);
-
-            if ( $report ) {
-
-            } else {
-                $user->report = null;
-            }
-
+        foreach ($users as $user) {
+            $user->reports = $reports->where('user_id', $user->id);
         }
 
         return response()->json($reports->toArray());
