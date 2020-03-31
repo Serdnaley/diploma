@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {queryString} from "../../util";
 
 export default {
 
@@ -34,7 +35,7 @@ export default {
     actions: {
 
         async getUsers({ commit }, data = {}) {
-            let res = await axios.get(`user`, data);
+            let res = await axios.get(`user?${queryString(data)}`);
 
             commit('get_users', res.data);
 
@@ -50,7 +51,7 @@ export default {
         },
 
         async getUser({ commit }, data = {}) {
-            let res = await axios.get(`user/${data.id}`, data);
+            let res = await axios.get(`user/${data.id}`);
 
             commit('get_user', res.data);
 

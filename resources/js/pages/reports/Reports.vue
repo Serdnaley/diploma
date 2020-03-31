@@ -65,14 +65,11 @@
                     <el-col :span="10">
                         ФИО
                     </el-col>
-                    <el-col :span="4">
-                        Дата
-                    </el-col>
-                    <el-col :span="4">
+                    <el-col :span="8">
                         Статус
                     </el-col>
                     <el-col :span="2">
-                        Кол.фото
+                        Фото
                     </el-col>
                     <el-col :span="4">
                         Действия
@@ -84,7 +81,7 @@
                 <div
                     class="entities-list__group"
                     v-for="group in reports_grouped_by_month"
-                    :key="group.created_at"
+                    :key="group.date"
                 >
                     <div class="entities-list__group-title">
                         {{ formatGroupTitle(group) }}
@@ -102,17 +99,30 @@
                                             {{ report.user.full_name }}
                                         </template>
                                     </el-col>
-                                    <el-col :span="4">
-                                        {{ report.created_at | formatDate }}
-                                    </el-col>
-                                    <el-col :span="4">
+                                    <el-col :span="8">
                                         <div
-                                            :class="{
-                                            'color-success': report.is_done,
-                                            'color-info': !report.is_done,
-                                        }"
+                                            v-if="report.status === 'new'"
+                                            class="color-warning"
                                         >
-                                            {{ report.is_done ? 'Выполнено' : 'Не выполнено' }}
+                                            Запланированно
+                                        </div>
+                                        <div
+                                            v-if="report.status === 'planned'"
+                                            class="color-info"
+                                        >
+                                            Запланированно на {{ report.date | formatDate }}
+                                        </div>
+                                        <div
+                                            v-if="report.status === 'expired'"
+                                            class="color-danger"
+                                        >
+                                            Запланированно на {{ report.date | formatDate }}
+                                        </div>
+                                        <div
+                                            v-if="report.status === 'done'"
+                                            class="color-success"
+                                        >
+                                            Выполнено {{ report.date | formatDate }}
                                         </div>
                                     </el-col>
                                     <el-col :span="2">
@@ -120,7 +130,7 @@
                                             {{ report.attachments.length }}
                                         </template>
                                     </el-col>
-                                    <el-col :span="4">
+                                    <el-col :span="4" v-if="report.id">
                                         <span
                                             class="color-primary clickable"
                                             style="margin-right: 10px;"
@@ -157,6 +167,7 @@
 <script>
     import moment from 'moment';
     import {formatDate} from "../../util/filters";
+    import {errorHandler} from "../../util";
     import {mapGetters, mapActions} from 'vuex';
 
     export default {
@@ -171,7 +182,10 @@
                 filter_data: {
                     active_tab: 'fluorography',
                     group_by: 'month',
-                    date_range: [],
+                    date_range: [
+                        moment().subtract(1, 'year').format('YYYY-MM-DD'),
+                        moment().format('YYYY-MM-DD'),
+                    ],
                 },
                 loading: false,
             }
@@ -185,13 +199,26 @@
             ...mapGetters(['reports_grouped_by_month']),
         },
 
+        watch: {
+            filter_data: {
+                deep: true,
+                handler() {
+                    this.fetchData();
+                }
+            },
+        },
+
         methods: {
             ...mapActions(['getReports', "deleteReport"]),
 
             async fetchData() {
                 this.loading = true;
 
-                await this.getReports()
+                await this
+                    .getReports({
+                        from: this.filter_data.date_range[0],
+                        to: this.filter_data.date_range[1],
+                    })
                     .catch((err) => {
                         this.$message.error(errorHandler(err).message || 'Не удалось загрузить комиссии')
                     });
@@ -200,10 +227,10 @@
             },
 
             formatGroupTitle(group) {
-                if (this.filter_data.group_by === 'month') {
-                    return moment(group.created_at).format('MMMM');
+                if (group.date) {
+                    return moment(group.date).format('MMMM');
                 } else {
-                    return moment(group.created_at).format('dd, DD.MM.YYYY');
+                    return 'Без единого отчета';
                 }
             },
 

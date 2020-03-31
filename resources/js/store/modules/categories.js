@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {queryString} from "../../util";
 
 export default {
 
@@ -34,7 +35,7 @@ export default {
     actions: {
 
         async getCategories({ commit }, data = {}) {
-            let res = await axios.get(`category`, data);
+            let res = await axios.get(`category?${queryString(data)}`);
 
             commit('get_categories', res.data);
 
@@ -50,7 +51,7 @@ export default {
         },
 
         async getCategory({ commit }, data = {}) {
-            let res = await axios.get(`category/${data.id}`, data);
+            let res = await axios.get(`category/${data.id}`);
 
             commit('get_category', res.data);
 

@@ -18,7 +18,7 @@ export function errorHandler(err = false)
 {
 
     if (err && process.env.NODE_ENV === 'development') {
-        console.log(err.response);
+        console.log(err, err.response);
     }
 
     if (
@@ -32,4 +32,17 @@ export function errorHandler(err = false)
         return false;
     }
 
+}
+
+
+export function queryString(query = []) {
+    const items = Object.keys(query);
+
+    let url = '';
+
+    items.forEach((key, i) => {
+        url += (i === 0 ? '' : '&') + encodeURIComponent(key) + '=' + encodeURIComponent(query[key]);
+    });
+
+    return url;
 }

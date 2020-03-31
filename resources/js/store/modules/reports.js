@@ -1,5 +1,6 @@
 import axios from 'axios';
 import moment from 'moment';
+import {queryString} from "../../util";
 
 export default {
 
@@ -9,11 +10,47 @@ export default {
     },
 
     getters: {
-        reports: (state) => state.reports,
+        reports: (state) => {
+            let result = [];
+            let used_ids = [];
+
+            state.reports.map(user => {
+                if (user.reports) {
+                    user.reports.map(report => {
+                        if (report.id && used_ids.includes(report.id)) {
+                            return false;
+                        }
+
+                        report = _.clone(report);
+
+                        report.user = _.cloneDeep(user);
+
+                        if (!report.id) {
+                            if (!report.date) {
+                                report.status = 'new'
+                            } else {
+                                if (moment(report.date) < moment().subtract(1, 'year')) {
+                                    report.status = 'expired'
+                                } else {
+                                    report.status = 'planned'
+                                }
+                            }
+                        } else {
+                            report.status = 'done'
+                        }
+
+                        used_ids.push(report.id);
+                        result.push(report);
+                    })
+                }
+            });
+
+            return result;
+        },
         report: (state) => state.report,
 
         reports_sorted_by_date: (state, getters) => {
-            return [...getters.reports].sort((a,b) => moment(b.created_at) - moment(a.created_at))
+            return [...getters.reports].sort((a,b) => moment(b.date) - moment(a.date))
         },
 
         reports_grouped_by_month: (state, getters) => {
@@ -23,13 +60,13 @@ export default {
             getters.reports_sorted_by_date.map(report => {
                 if (
                     !prev || (
-                        moment(prev.created_at).format('YYYY-MM')
+                        moment(prev.date || 0).format('YYYY-MM')
                         !==
-                        moment(report.created_at).format('YYYY-MM')
+                        moment(report.date || 0).format('YYYY-MM')
                     )
                 ) {
                     result.push({
-                        created_at: report.created_at,
+                        date: report.date,
                         items: [
                             report
                         ],
@@ -67,7 +104,7 @@ export default {
     actions: {
 
         async getReports({ commit }, data = {}) {
-            let res = await axios.get(`report`, data);
+            let res = await axios.get(`report?${queryString(data)}`);
 
             commit('get_reports', res.data);
 
@@ -83,7 +120,7 @@ export default {
         },
 
         async getReport({ commit }, data = {}) {
-            let res = await axios.get(`report/${data.id}`, data);
+            let res = await axios.get(`report/${data.id}`);
 
             commit('get_report', res.data);
 

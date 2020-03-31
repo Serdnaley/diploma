@@ -53,11 +53,12 @@ class ReportController extends Controller
                         'user_id' => $user->id,
                         'date' => $date
                     ]);
+                    $date->addYears(1);
                 }
             }
 
             $user->reports = $reports->where('date', '>=', $from)
-                ->where('date', '<=', $to);
+                ->where('date', '<=', $to)->values();
         }
 
         return response()->json($users->toArray());
