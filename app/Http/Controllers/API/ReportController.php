@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Report;
+use App\User;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
@@ -13,9 +14,27 @@ class ReportController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
-        $reports = Report::all();
+        $this->validate($request, [
+            'from' => 'required|date',
+            'to' => 'required|date',
+        ]);
+
+        $users = User::all();
+
+        $reports = Report::latest()->get();
+
+        foreach ($users as &$user) {
+            $report = $reports->firstWhere('user_id', $user->id);
+
+            if ( $report ) {
+
+            } else {
+                $user->report = null;
+            }
+
+        }
 
         return response()->json($reports->toArray());
     }
