@@ -9,7 +9,6 @@ import VueImg from 'v-img'
 import ElementUI from 'element-ui'
 import ElementUILocale from 'element-ui/lib/locale/lang/ru-RU'
 import {loadProgressBar} from 'axios-progress-bar'
-import Cookies from 'js-cookie'
 
 import auth from './plugins/auth';
 
@@ -25,9 +24,9 @@ Vue.store = store;
 window._ = lodash;
 
 window.axios = axios;
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
-axios.defaults.headers.common['Authorization'] = 'Bearer ' + Cookies.get('Token');
+axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('Token');
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.baseURL = `/api/`;
 
 Vue.use(VueAxios, axios);

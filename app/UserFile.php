@@ -82,7 +82,6 @@ class UserFile extends Model
             'path' => $path,
             'type' => $file->getMimeType(),
             'owner_id' => \Auth::id(),
-            'created_by' => \Auth::id(),
         ]);
 
         return $user_file;

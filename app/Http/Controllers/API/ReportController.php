@@ -4,6 +4,8 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Report;
+use App\User;
+use App\UserFile;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
@@ -15,7 +17,7 @@ class ReportController extends Controller
      */
     public function index()
     {
-        $reports = Report::all();
+        $reports = Report::with(['attachments', 'user'])->get();
 
         return response()->json($reports->toArray());
     }
@@ -34,8 +36,8 @@ class ReportController extends Controller
             'user_id' => 'required|integer',
             'date' => 'required|date',
             'type' => 'required|string',
-            'attachments' => 'required|array',
-            'attachments.*' => 'integer',
+            'attachment_ids' => 'required|array',
+            'attachment_ids.*' => 'integer',
         ]);
 
         $report = Report::create($request->only([
@@ -44,9 +46,17 @@ class ReportController extends Controller
             'type',
         ]));
 
-        $report->attachments()->sync($request->attachments);
 
-        return response()->json($report->toArray());
+        $report->attachments()->delete();
+
+        if ($request->attachment_ids) {
+            $users = UserFile::whereIn('id', $request->attachment_ids)->get();
+            $report->attachments()->saveMany($users);
+        }
+
+        $report = Report::with(['attachments', 'user'])->find($report->id);
+
+        return response()->json($report);
     }
 
     /**
@@ -58,7 +68,7 @@ class ReportController extends Controller
      */
     public function show($id)
     {
-        $report = Report::find($id);
+        $report = Report::with(['attachments', 'user'])->find($id);
 
         if (!$report) {
             return response()->json([
@@ -85,8 +95,8 @@ class ReportController extends Controller
             'user_id' => 'required|integer',
             'date' => 'required|date',
             'type' => 'required|string',
-            'attachments' => 'required|array',
-            'attachments.*' => 'integer',
+            'attachment_ids' => 'required|array',
+            'attachment_ids.*' => 'integer',
         ]);
 
         $report = Report::find($id);
@@ -104,7 +114,15 @@ class ReportController extends Controller
             'type',
         ]));
 
-        $report->attachments()->sync($request->attachments);
+
+        $report->attachments()->delete();
+
+        if ($request->attachment_ids) {
+            $users = UserFile::whereIn('id', $request->attachment_ids)->get();
+            $report->attachments()->saveMany($users);
+        }
+
+        $report = Report::with(['attachments', 'user'])->find($report->id);
 
         return response()->json($report);
     }

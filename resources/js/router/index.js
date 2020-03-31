@@ -60,6 +60,18 @@ const router = new VueRouter({
             name: 'Reports',
             meta: {auth: 'admin'},
             component: () => import('../pages/reports/Reports'),
+            children: [
+                {
+                    path: 'add',
+                    name: 'AddReport',
+                    component: () => import('../pages/reports/AddEditReport'),
+                },
+                {
+                    path: 'edit/:report_id',
+                    name: 'EditReport',
+                    component: () => import('../pages/reports/AddEditReport'),
+                },
+            ],
         },
         {
             path: '/register',
@@ -70,11 +82,13 @@ const router = new VueRouter({
         {
             path: '/403',
             name: '403',
+            meta: {auth: true},
             component: () => import('../pages/403'),
         },
         {
             path: '*',
             name: '404',
+            meta: {auth: true},
             component: () => import('../pages/404'),
         },
     ],

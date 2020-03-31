@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UpdateUserRequest;
+use App\Http\Resources\UserResource;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -18,7 +19,7 @@ class UserController extends Controller
     {
         $users = User::all();
 
-        return response()->json($users);
+        return UserResource::collection($users);
     }
 
     /**
@@ -44,7 +45,7 @@ class UserController extends Controller
         $user->password = bcrypt($password);
         $user->save();
 
-        return response()->json($user);
+        return new UserResource($user);
     }
 
     /**
@@ -65,7 +66,7 @@ class UserController extends Controller
             ], 404);
         }
 
-        return response()->json($user);
+        return new UserResource($user);
     }
 
     /**
@@ -100,7 +101,7 @@ class UserController extends Controller
             $user->password = bcrypt($request->password);
         }
 
-        return response()->json($user);
+        return new UserResource($user);
     }
 
     /**

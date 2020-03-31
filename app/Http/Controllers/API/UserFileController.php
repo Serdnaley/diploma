@@ -17,7 +17,7 @@ class UserFileController extends Controller
      */
     public function store(Request $request)
     {
-        $files = UserFile::store_files($request);
+        $files = UserFile::store_file($request->file('file'));
 
         return response()->json([
             'status' => 'success',

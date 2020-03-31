@@ -121,7 +121,7 @@ class User extends Authenticatable implements JWTSubject
      * @return string
      */
     public function getFullNameAttribute() {
-        return join(' ', [
+        return implode(' ', [
             $this->last_name,
             $this->first_name,
             $this->patronymic
@@ -134,15 +134,12 @@ class User extends Authenticatable implements JWTSubject
      * @return string
      */
     public function getShortNameAttribute() {
-        if ( $this->first_name ) {
-            if ( $this->last_name ) {
-                return $this->first_name . ' ' . $this->last_name;
-            } else {
-                return $this->first_name;
-            }
-        }
 
-        return $this->login;
+        $name = $this->last_name;
+        $name .= ' ' . mb_strtoupper(mb_substr($this->first_name, 0, 1)) . '.';
+        $name .= ' ' . mb_strtoupper(mb_substr($this->patronymic, 0, 1)) . '.';
+
+        return $name;
     }
 
     /**

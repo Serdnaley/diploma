@@ -115,17 +115,12 @@
 
         data() {
             return {
-                filter_data: {
-                    active_tab: 'fluorography',
-                    group_by: 'month',
-                    date_range: [],
-                },
                 loading: false,
             }
         },
 
-        beforeRouteEnter(to, from, next) {
-            next(vm => vm.fetchData());
+        created() {
+            this.fetchData();
         },
 
         computed: {
@@ -140,7 +135,7 @@
 
                 await this.getUsers()
                     .catch((err) => {
-                        this.$message.error(errorHandler(err).message || 'Не удалось загрузить комиссии')
+                        this.$message.error(errorHandler(err).message || 'Не удалось загрузить пользователя')
                     });
 
                 this.loading = false;

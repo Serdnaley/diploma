@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Resources\UserResource;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -33,12 +34,8 @@ class AuthController extends Controller
 
     public function user(Request $request)
     {
-        $user = User::find(\Auth::user()->id);
-
-        return response()->json([
-            'status' => 'success',
-            'data' => $user
-        ]);
+        $user = \Auth::user();
+        return new UserResource($user);
     }
 
 

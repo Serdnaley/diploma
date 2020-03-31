@@ -13,7 +13,7 @@ class CreateUserFilesTable extends Migration
      */
     public function up()
     {
-        Schema::create('files', function (Blueprint $table) {
+        Schema::create('user_files', function (Blueprint $table) {
             $table->bigIncrements('id');
 
             $table->integer('owner_id')->nullable();
@@ -36,6 +36,6 @@ class CreateUserFilesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('files');
+        Schema::dropIfExists('user_files');
     }
 }

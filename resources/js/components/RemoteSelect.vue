@@ -44,7 +44,7 @@
             },
             dataLocation: {
                 type: String,
-                default: 'data',
+                default: 'data.data',
             },
             autoExecuteMethod: {
                 type: Boolean,

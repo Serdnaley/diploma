@@ -18,7 +18,9 @@ class UserCategoryController extends Controller
     {
         $categories = UserCategory::all();
 
-        return response()->json($categories->toArray());
+        return response()->json([
+            'data' => $categories->toArray()
+        ]);
     }
 
     /**
