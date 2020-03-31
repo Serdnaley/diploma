@@ -29,7 +29,7 @@ class ReportController extends Controller
         $from10years = $from->clone()->addYears(-10);
         $to = Carbon::parse($request->to);
 
-        $all_reports = Report::with(['attachments', 'user'])->latest()->get();
+        $all_reports = Report::with(['attachments'])->latest()->get();
 
         foreach ($users as &$user) {
             $reports = $all_reports->where('user_id', $user->id);
