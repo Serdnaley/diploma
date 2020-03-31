@@ -21,6 +21,12 @@
                 <el-input v-model="category_clone.name"/>
             </el-form-item>
 
+            <ul v-if="errors" class="color-danger">
+                <li v-for="error in errors">
+                    {{ error[0] }}
+                </li>
+            </ul>
+
             <el-form-item>
                 <el-button
                     type="primary"
@@ -141,7 +147,9 @@
                         this.close();
                     })
                     .catch((err) => {
-                        this.error = errorHandler(err);
+                        let error = errorHandler(err);
+                        this.errors = error;
+                        this.$message.error(error.message || 'Не удалось сохранить комиссию');
                     });
 
                 this.loading = false;

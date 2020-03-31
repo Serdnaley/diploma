@@ -1,25 +1,122 @@
 <template>
     <route-modal
-        :back-to-default="{name: 'Categories'}"
-        :title="(category_id ? 'Редактировать' : 'Добавить') + ' комиссию'"
+        :back-to-default="{name: 'Users'}"
+        :title="(user_id ? 'Редактировать' : 'Добавить') + ' комиссию'"
+        width="30%"
+        @close="handleClose()"
+        ref="modal"
     >
         <el-form
             ref="form"
-            :model="form"
+            :model="user_clone"
             :rules="rules"
             v-loading="loading"
             @keyup.enter="submit()"
         >
 
             <el-form-item
-                label="E-mail"
+                label="Имя:"
+                prop="first_name"
+            >
+                <el-input
+                    v-model="user_clone.first_name"
+                    name="first_name"
+                />
+            </el-form-item>
+
+            <el-form-item
+                label="Фамилия:"
+                prop="last_name"
+            >
+                <el-input
+                    v-model="user_clone.last_name"
+                    name="last_name"
+                />
+            </el-form-item>
+
+            <el-form-item
+                label="Отчество:"
+                prop="patronymic"
+            >
+                <el-input
+                    v-model="user_clone.patronymic"
+                    name="patronymic"
+                />
+            </el-form-item>
+
+            <el-form-item
+                label="Email:"
                 prop="email"
             >
                 <el-input
                     type="email"
+                    v-model="user_clone.email"
                     name="email"
-                    v-model="form.email"
                 />
+            </el-form-item>
+
+            <el-form-item
+                label="Роль:"
+                prop="role"
+            >
+                <el-select
+                    v-model="user_clone.role"
+                    name="role"
+                    style="width: 100%;"
+                >
+                    <el-option
+                        value="admin"
+                        label="Администратор"
+                    />
+                    <el-option
+                        value="user"
+                        label="Пользователь"
+                    />
+                </el-select>
+            </el-form-item>
+
+            <el-form-item
+                label="Цикловая комиссия:"
+                prop="user_category_id"
+            >
+                <remote-select
+                    v-model="user_clone.user_category_id"
+                    name="user_category_id"
+                    :method="getCategories"
+                    style="width: 100%;"
+                >
+                    <template v-slot:item="{item}">
+                        <el-option
+                            :value="item.id"
+                            :label="item.name"
+                        />
+                    </template>
+                </remote-select>
+            </el-form-item>
+
+            <el-form-item
+                label="Телефон:"
+                prop="phone"
+            >
+                <el-input
+                    v-model="user_clone.phone"
+                    name="phone"
+                />
+            </el-form-item>
+
+            <ul v-if="errors" class="color-danger">
+                <li v-for="error in errors">
+                    {{ error[0] }}
+                </li>
+            </ul>
+
+            <el-form-item>
+                <el-button
+                    type="primary"
+                    @click="submit()"
+                >
+                    {{ user_id ? 'Сохранить' : 'Добавить' }}
+                </el-button>
             </el-form-item>
 
         </el-form>
@@ -28,57 +125,187 @@
 
 <script>
     import RouteModal from "../../components/RouteModal";
+    import RemoteSelect from "../../components/RemoteSelect";
     import {mapGetters, mapActions} from 'vuex';
+    import {validateForm, resetForm, errorHandler} from "../../util";
 
     export default {
-        name: "AddEditCategory",
+        name: "AddEditUser",
 
         components: {
             RouteModal,
+            RemoteSelect,
         },
 
         data() {
             return {
                 loading: false,
 
-                form: {
+                user_clone: {},
+
+                user_default: {
                     first_name: '',
                     last_name: '',
                     patronymic: '',
-                    role: '',
+                    role: 'user',
                     email: '',
-                    category: '',
+                    phone: '',
+                    user_category_id: '',
                 },
-                rules: {
 
+                rules: {
+                    first_name: [
+                        {
+                            required: true,
+                            message: 'Введите имя пользователя',
+                            trigger: 'blur',
+                        },
+                        {
+                            min: 2,
+                            message: 'Слишком короткое имя',
+                            trigger: 'blur',
+                        },
+                    ],
+                    last_name: [
+                        {
+                            required: true,
+                            message: 'Введите фамилию пользователя',
+                            trigger: 'blur',
+                        },
+                        {
+                            min: 2,
+                            message: 'Слишком короткая фамилия',
+                            trigger: 'blur',
+                        },
+                    ],
+                    patronymic: [
+                        {
+                            required: true,
+                            message: 'Введите отчество пользователя',
+                            trigger: 'blur',
+                        },
+                        {
+                            min: 2,
+                            message: 'Слишком короткое отчество',
+                            trigger: 'blur',
+                        },
+                    ],
+                    role: [
+                        {
+                            required: true,
+                            message: 'Выберите роль пользователя',
+                            trigger: 'blur',
+                        },
+                    ],
+                    email: [
+                        {
+                            required: true,
+                            message: 'Введите email пользователя',
+                            trigger: 'blur',
+                        },
+                        {
+                            type: 'email',
+                            message: 'Неверно введен email',
+                            trigger: 'blur',
+                        },
+                    ],
+                    phone: [
+                        {
+                            required: true,
+                            message: 'Введите номер телефона пользователя',
+                            trigger: 'blur',
+                        },
+                        {
+                            min: 10,
+                            message: 'Неверно введен номер телефона',
+                            trigger: 'blur',
+                        },
+                    ],
                 },
+
+                errors: false,
             }
         },
 
-        computed: {
-            ...mapGetters(['category']),
+        mounted() {
+            this.fetchData();
+        },
 
-            category_id() {
-                return this.$route.params.category_id;
+        computed: {
+            ...mapGetters(['user']),
+
+            user_id() {
+                return this.$route.params.user_id;
             },
         },
 
+        watch: {
+            user() {
+                this.user_clone = _.cloneDeep(this.user);
+            }
+        },
+
         methods: {
-            ...mapActions(['getCategory']),
+            ...mapActions(['getUser', "updateUser", "addUser", "getCategories"]),
 
             async fetchData() {
                 this.loading = true;
 
-                await this
-                    .getCategory(this.category_clone)
+                if (this.user_id) {
+                    await this
+                        .getUser({id: this.user_id})
+                        .catch((err) => {
+                            this.$message.error(
+                                errorHandler(err).message
+                                || 'Не удалось загрузить комиссию'
+                            );
+                        });
+                } else {
+                    this.user_clone = _.cloneDeep(this.user_default);
+                }
+
+                this.loading = false;
+            },
+
+            async submit() {
+
+                if (!validateForm(this.$refs.form)) {
+                    this.$notify({
+                        title: 'Данные введены неверно',
+                        type: 'error',
+                        position: 'bottom-left',
+                    });
+                    return false;
+                }
+
+                this.loading = true;
+
+                let method = this.user_id
+                    ? this.updateUser
+                    : this.addUser;
+
+                let res = await method(this.user_clone)
+                    .then(() => {
+                        this.user_clone = _.cloneDeep(this.user_default);
+                        this.close();
+                    })
                     .catch((err) => {
-                        this.$message.error(
-                            errorHandler(err).message
-                            || 'Не удалось ' + (this.category_id ? 'отредактировать' : 'добавить') + ''
-                        );
+                        let error = errorHandler(err);
+                        this.errors = error;
+                        this.$message.error(error.message || 'Не удалось сохранить пользователя');
                     });
 
                 this.loading = false;
+
+                return res;
+            },
+
+            close() {
+                this.$refs.modal.close();
+            },
+
+            handleClose() {
+                resetForm(this.$refs.form);
             },
         },
     }

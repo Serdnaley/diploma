@@ -29,7 +29,7 @@ class UpdateUserRequest extends FormRequest
             'patronymic' => 'required|string|min:3',
             'role' => 'required|string|in:admin,user',
             'user_category_id' => 'required|integer',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users',
             'password' => 'nullable|string|min:6',
         ];
     }

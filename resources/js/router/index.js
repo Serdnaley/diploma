@@ -42,6 +42,18 @@ const router = new VueRouter({
             name: 'Users',
             meta: {auth: 'admin'},
             component: () => import('../pages/users/Users'),
+            children: [
+                {
+                    path: 'add',
+                    name: 'AddUser',
+                    component: () => import('../pages/users/AddEditUser'),
+                },
+                {
+                    path: 'edit/:user_id',
+                    name: 'EditUser',
+                    component: () => import('../pages/users/AddEditUser'),
+                },
+            ],
         },
         {
             path: '/reports',

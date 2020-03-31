@@ -24,7 +24,8 @@
             <el-tabs
                 tab-position="left"
                 class="aside__menu"
-                v-model="active_index"
+                :value="active_index"
+                @tab-click="handleChange"
             >
                 <el-tab-pane
                     v-for="(item, index) in menu"
@@ -50,54 +51,35 @@
                 menu: [
                     {
                         name: 'Цикловые комиссии',
-                        route: {name: 'Categories'},
+                        route: 'Categories',
                     },
                     {
                         name: 'Пользователи',
-                        route: {name: 'Users'},
+                        route: 'Users',
                     },
                     {
                         name: 'Отчеты',
-                        route: {name: 'Reports'},
+                        route: 'Reports',
                     },
                     {
                         name: 'Настройки',
-                        route: {name: 'Settings'},
+                        route: 'Settings',
                     },
                 ],
-                active_index: 0,
             }
         },
 
-        watch: {
-            $route: {
-                handler() {
-                    this.handleRouteChange();
-                },
-                immediate: true,
-            },
-
-            active_index(index) {
-                let item = this.menu[+index];
-                if (item && item.route && this.$route.name !== item.route.name) {
-                    this.$router.push(item.route);
-                }
-            },
+        computed: {
+            active_index() {
+                return _.findIndex(this.menu, {route: this.$route.name}).toString();
+            }
         },
 
         methods: {
-            handleRouteChange() {
-                for (let index in this.menu) {
-
-                    if (!this.menu.hasOwnProperty(index)) continue;
-
-                    let needed = this.menu[index].route.name;
-                    let reversedRoute = _.clone(this.$route.matched).reverse();
-
-                    if (reversedRoute.some(({name}) => name && name === needed)) {
-                        this.active_index = index;
-                    }
-                }
+            handleChange(tab) {
+                let item = this.menu[tab.index];
+                if (item && item.route !== this.$route.name)
+                    this.$router.push({name: item.route});
             },
 
             exit() {

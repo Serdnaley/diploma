@@ -1,5 +1,5 @@
 <template>
-    <div class="users">
+    <div class="categories">
 
         <router-view/>
 
@@ -52,14 +52,14 @@
                                 <span
                                     class="color-primary clickable"
                                     style="margin-right: 10px;"
-                                    @click="edit(category.id)"
+                                    @click="edit(category)"
                                 >
                                     Изменить
                                 </span>
                                 <span
                                     class="color-danger clickable"
                                     style="margin-right: 10px;"
-                                    @click="doDelete(category.id)"
+                                    @click="doDelete(category)"
                                 >
                                     Удалить
                                 </span>
@@ -132,18 +132,32 @@
                 });
             },
 
-            edit(category_id) {
+            edit(category) {
                 this.$router.push({
                     name: 'EditCategory',
-                    params: {category_id}
+                    params: {category_id: category.id}
                 });
             },
 
-            async doDelete(id) {
+            async doDelete(item) {
+
+                let confirm = await this
+                    .$confirm(
+                        'Вы действительно хотите удалить "' + item.name + '"?',
+                        'Подтвердите действие',
+                        {
+                            confirmButtonText: 'Удалить',
+                            cancelButtonText: 'Отмена',
+                        }
+                    )
+                    .catch(_.noop);
+
+                if (!confirm) return;
+
                 this.loading = true;
 
                 await this
-                    .deleteCategory({id})
+                    .deleteCategory({id: item.id})
                     .catch(err => {
                         this.$message.error(errorHandler(err).message || 'Не удалось удалить комиссию');
                     });
@@ -157,7 +171,7 @@
 <style lang="scss">
     @import '../../../scss/variables';
 
-    .users {
+    .categories {
 
         .title {
             margin-bottom: 30px;
