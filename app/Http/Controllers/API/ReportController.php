@@ -65,12 +65,8 @@ class ReportController extends Controller
         ]));
 
 
-        $report->attachments()->delete();
-
-        if ($request->attachment_ids) {
-            $users = UserFile::whereIn('id', $request->attachment_ids)->get();
-            $report->attachments()->saveMany($users);
-        }
+        $users = UserFile::whereIn('id', $request->attachment_ids)->get();
+        $report->attachments()->saveMany($users);
 
         $report = Report::with(['attachments', 'user'])->find($report->id);
 
@@ -117,7 +113,7 @@ class ReportController extends Controller
             'attachment_ids.*' => 'integer',
         ]);
 
-        $report = Report::find($id);
+        $report = Report::with(['attachments'])->find($id);
 
         if (!$report) {
             return response()->json([
@@ -132,15 +128,20 @@ class ReportController extends Controller
             'type',
         ]));
 
+        // Удаляем старые файлы
+        foreach ($report->attachments as $attachment) {
+            if ( !in_array($attachment->id, $request->attachment_ids) ){
+                $attachment->delete();
+            }
+        }
 
-        $report->attachments()->delete();
-
+        // Прикреплаяем новые
         if ($request->attachment_ids) {
             $users = UserFile::whereIn('id', $request->attachment_ids)->get();
             $report->attachments()->saveMany($users);
         }
 
-        $report = Report::with(['attachments', 'user'])->find($report->id);
+        $report->load(['attachments', 'user']);
 
         return response()->json($report);
     }
