@@ -25,19 +25,44 @@ class ReportController extends Controller
 
         $users = User::all();
 
-        $from = Carbon::parse($request->from)->addYears(-1);
+        $from = Carbon::parse($request->from);
+        $from10years = $from->clone()->addYears(-10);
         $to = Carbon::parse($request->to);
 
-        $reports = Report::with(['attachments'])
-            ->whereDate('date', '>=', $from)
-            ->whereDate('date', '<=', $to)
-            ->latest()->get();
+        $all_reports = Report::with(['attachments', 'user'])->latest()->get();
 
-        foreach ($users as $user) {
-            $user->reports = $reports->where('user_id', $user->id);
+        foreach ($users as &$user) {
+            $reports = $all_reports->where('user_id', $user->id);
+
+            if ( !$reports ) {
+                $user->reports = [
+                    Report::make([
+                        'user_id' => $user->id,
+                        'status' => 'new'
+                    ])
+                ];
+
+                continue;
+            }
+
+            $latest = $reports->first();
+
+            if ( $latest->date <= $to && $latest->date >= $from10years ) {
+                $date = $latest->date->clone();
+                while ( $date < $to ) {
+                    $reports[] = Report::make([
+                        'user_id' => $user->id,
+                        'date' => $date,
+                        'status' => 'fake'
+                    ]);
+                }
+            }
+
+            $user->reports = $reports->where('date', '>=', $from)
+                ->where('date', '<=', $to);
         }
 
-        return response()->json($reports->toArray());
+        return response()->json($users->toArray());
     }
 
     /**
