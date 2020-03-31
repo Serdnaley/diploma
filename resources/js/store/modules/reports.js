@@ -12,12 +12,12 @@ export default {
     getters: {
         reports: (state) => {
             let result = [];
-            let used_ids = [];
+            let used_dates = {};
 
             state.reports.map(user => {
                 if (user.reports) {
                     user.reports.map(report => {
-                        if (report.id && used_ids.includes(report.id)) {
+                        if (report.id && used_dates.hasOwnProperty(report.id)) {
                             return false;
                         }
 
@@ -39,7 +39,7 @@ export default {
                             report.status = 'done'
                         }
 
-                        used_ids.push(report.id);
+                        used_dates[report.id] = moment(report.date).format('YYYY-MM-DD');
                         result.push(report);
                     })
                 }
