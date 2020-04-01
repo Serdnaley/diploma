@@ -21,12 +21,12 @@ export default {
         },
         get_user: (state, data) => state.user = data,
         update_user: (state, data) => {
-            if (state.user.id === data.id) state.user = data;
+            if (state.user && state.user.id === data.id) state.user = data;
             let index = _.findIndex(state.users, {id: data.id});
             if (index !== -1) state.users[index] = data;
         },
         delete_user: (state, data) => {
-            if (state.user.id === data.id) state.user = null;
+            if (state.user && state.user.id === data.id) state.user = null;
             let index = _.findIndex(state.users, {id: data.id});
             if (index !== -1) state.users.splice(index, 1);
         },
@@ -37,7 +37,7 @@ export default {
         async getUsers({ commit }, data = {}) {
             let res = await axios.get(`user?${queryString(data)}`);
 
-            commit('get_users', res.data);
+            commit('get_users', res.data.data);
 
             return res;
         },
@@ -45,7 +45,7 @@ export default {
         async addUser({ commit }, data = {}) {
             let res = await axios.post(`user`, data);
 
-            commit('add_user', res.data);
+            commit('add_user', res.data.data);
 
             return res;
         },
@@ -53,7 +53,7 @@ export default {
         async getUser({ commit }, data = {}) {
             let res = await axios.get(`user/${data.id}`);
 
-            commit('get_user', res.data);
+            commit('get_user', res.data.data);
 
             return res;
         },
@@ -61,7 +61,7 @@ export default {
         async updateUser({ commit }, data = {}) {
             let res = await axios.put(`user/${data.id}`, data);
 
-            commit('update_user', res.data);
+            commit('update_user', res.data.data);
 
             return res;
         },

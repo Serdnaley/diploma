@@ -56,6 +56,8 @@
             return {
                 loading: false,
 
+                errors: false,
+
                 rules: {
                     name: [
                         {

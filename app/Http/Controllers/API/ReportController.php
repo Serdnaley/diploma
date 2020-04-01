@@ -21,6 +21,7 @@ class ReportController extends Controller
         $this->validate($request, [
             'from' => 'required|date',
             'to' => 'required|date',
+            'type' => 'required|string',
         ]);
 
         $users = User::all();
@@ -29,7 +30,7 @@ class ReportController extends Controller
         $from10years = $from->clone()->addYears(-10);
         $to = Carbon::parse($request->to);
 
-        $all_reports = Report::with(['attachments'])->latest()->get();
+        $all_reports = Report::where('type', '=', $request->type)->with(['attachments'])->latest()->get();
 
         foreach ($users as &$user) {
             $reports = $all_reports->where('user_id', $user->id);
@@ -49,10 +50,12 @@ class ReportController extends Controller
             if ( $latest->date <= $to && $latest->date >= $from10years ) {
                 $date = $latest->date->clone();
                 while ( $date < $to ) {
-                    $reports[] = Report::make([
-                        'user_id' => $user->id,
-                        'date' => $date
-                    ]);
+                    if ($reports->where('date', '==', $date)->isEmpty()) {
+                        $reports[] = Report::make([
+                            'user_id' => $user->id,
+                            'date' => $date
+                        ]);
+                    }
                     $date->addYears(1);
                 }
             }

@@ -218,6 +218,7 @@
                     .getReports({
                         from: this.filter_data.date_range[0],
                         to: this.filter_data.date_range[1],
+                        type: this.filter_data.active_tab
                     })
                     .catch((err) => {
                         this.$message.error(errorHandler(err).message || 'Не удалось загрузить комиссии')
@@ -228,7 +229,7 @@
 
             formatGroupTitle(group) {
                 if (group.date) {
-                    return moment(group.date).format('MMMM');
+                    return moment(group.date).format('MMMM, YYYY');
                 } else {
                     return 'Без единого отчета';
                 }

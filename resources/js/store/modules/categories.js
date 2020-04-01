@@ -21,12 +21,12 @@ export default {
         },
         get_category: (state, data) => state.category = data,
         update_category: (state, data) => {
-            if (state.category.id === data.id) state.category = data;
+            if (state.category && state.category.id === data.id) state.category = data;
             let index = _.findIndex(state.categories, {id: data.id});
             if (index !== -1) state.categories[index] = data;
         },
         delete_category: (state, data) => {
-            if (state.category.id === data.id) state.category = null;
+            if (state.category && state.category.id === data.id) state.category = null;
             let index = _.findIndex(state.categories, {id: data.id});
             if (index !== -1) state.categories.splice(index, 1);
         },
@@ -37,7 +37,7 @@ export default {
         async getCategories({ commit }, data = {}) {
             let res = await axios.get(`category?${queryString(data)}`);
 
-            commit('get_categories', res.data);
+            commit('get_categories', res.data.data);
 
             return res;
         },
