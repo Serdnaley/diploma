@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import VueRouter from "vue-router";
-import {Loading} from "element-ui";
 import VueRouterBackButton from 'vue-router-back-button';
 
 Vue.use(VueRouter);
@@ -17,23 +16,23 @@ const router = new VueRouter({
             path: '/login',
             name: 'Login',
             meta: {auth: false},
-            component: () => import('../pages/Login'),
+            component: require('../pages/Login').default,
         },
         {
             path: '/categories',
             name: 'Categories',
             meta: {auth: 'admin'},
-            component: () => import('../pages/categories/Categories'),
+            component: require('../pages/categories/Categories').default,
             children: [
                 {
                     path: 'add',
                     name: 'AddCategory',
-                    component: () => import('../pages/categories/AddEditCategory'),
+                    component: require('../pages/categories/AddEditCategory').default,
                 },
                 {
                     path: 'edit/:category_id',
                     name: 'EditCategory',
-                    component: () => import('../pages/categories/AddEditCategory'),
+                    component: require('../pages/categories/AddEditCategory').default,
                 },
             ],
         },
@@ -41,17 +40,17 @@ const router = new VueRouter({
             path: '/users',
             name: 'Users',
             meta: {auth: 'admin'},
-            component: () => import('../pages/users/Users'),
+            component: require('../pages/users/Users').default,
             children: [
                 {
                     path: 'add',
                     name: 'AddUser',
-                    component: () => import('../pages/users/AddEditUser'),
+                    component: require('../pages/users/AddEditUser').default,
                 },
                 {
                     path: 'edit/:user_id',
                     name: 'EditUser',
-                    component: () => import('../pages/users/AddEditUser'),
+                    component: require('../pages/users/AddEditUser').default,
                 },
             ],
         },
@@ -59,17 +58,17 @@ const router = new VueRouter({
             path: '/reports',
             name: 'Reports',
             meta: {auth: 'admin'},
-            component: () => import('../pages/reports/Reports'),
+            component: require('../pages/reports/Reports').default,
             children: [
                 {
                     path: 'add',
                     name: 'AddReport',
-                    component: () => import('../pages/reports/AddEditReport'),
+                    component: require('../pages/reports/AddEditReport').default,
                 },
                 {
                     path: 'edit/:report_id',
                     name: 'EditReport',
-                    component: () => import('../pages/reports/AddEditReport'),
+                    component: require('../pages/reports/AddEditReport').default,
                 },
             ],
         },
@@ -77,19 +76,19 @@ const router = new VueRouter({
             path: '/register',
             name: 'Settings',
             meta: {auth: 'admin'},
-            component: () => import('../pages/settings/Settings'),
+            component: require('../pages/settings/Settings').default,
         },
         {
             path: '/403',
             name: '403',
             meta: {auth: true},
-            component: () => import('../pages/403'),
+            component: require('../pages/403').default,
         },
         {
             path: '*',
             name: '404',
             meta: {auth: true},
-            component: () => import('../pages/404'),
+            component: require('../pages/404').default,
         },
     ],
 });
