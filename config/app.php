@@ -176,6 +176,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        \App\Providers\TelegramAPIServiceProvider::class,
+        \App\Providers\TelegramBotServiceProvider::class,
     ],
 
     /*
@@ -228,6 +230,8 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+        'TelegramAPI' => \App\Facades\TelegramAPIService::class,
+        'TelegramBot' => \App\Facades\TelegramBotService::class,
     ],
 
 ];

@@ -14,7 +14,9 @@ class ReportController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function index(Request $request)
     {
@@ -24,13 +26,27 @@ class ReportController extends Controller
             'type' => 'required|string',
         ]);
 
-        $users = User::all();
+        if ($request->category) {
+            if ($request->category === 'all') {
+                $users = User::all();
+            } else if ($request->category === 'without') {
+                $users = User::whereNull('user_category_id')->get();
+            } else {
+                $users = User::where('user_category_id', $request->category)->get();
+            }
+        } else {
+            $users = User::all();
+        }
+
+        if ($users->isEmpty()) {
+            return response()->json([]);
+        }
 
         $from = Carbon::parse($request->from);
         $from10years = $from->clone()->addYears(-10);
         $to = Carbon::parse($request->to);
 
-        $all_reports = Report::where('type', '=', $request->type)->with(['attachments'])->latest()->get();
+        $all_reports = Report::where('type', $request->type)->with(['attachments'])->latest()->get();
 
         foreach ($users as &$user) {
             $reports = $all_reports->where('user_id', $user->id);
@@ -38,7 +54,7 @@ class ReportController extends Controller
             if ( $reports->isEmpty() ) {
                 $user->reports = [
                     Report::make([
-                        'user_id' => $user->id
+                        'user_id' => $user->id,
                     ])
                 ];
 
@@ -50,11 +66,13 @@ class ReportController extends Controller
             if ( $latest->date <= $to && $latest->date >= $from10years ) {
                 $date = $latest->date->clone();
                 while ( $date < $to ) {
-                    if ($reports->where('date', '==', $date)->isEmpty()) {
-                        $reports[] = Report::make([
+                    if ($reports->where('date', $date)->isEmpty()) {
+                        $report = Report::make([
                             'user_id' => $user->id,
-                            'date' => $date
+                            'date' => $date,
                         ]);
+                        $report->setAttribute('real_date', $latest->date);
+                        $reports[] = $report;
                     }
                     $date->addYears(1);
                 }

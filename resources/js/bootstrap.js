@@ -25,7 +25,7 @@ window._ = lodash;
 
 window.axios = axios;
 
-axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('Token');
+axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('access');
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.baseURL = `/api/`;
 

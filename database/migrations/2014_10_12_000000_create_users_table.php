@@ -20,9 +20,11 @@ class CreateUsersTable extends Migration
             $table->string('patronymic');
             $table->string('role');
             $table->string('email')->unique();
-            $table->string('user_category_id')->nullable();
             $table->timestamp('email_verified_at')->nullable();
+            $table->integer('user_category_id')->nullable();
             $table->string('password');
+            $table->integer('telegram_chat_id');
+            $table->string('fast_auth_token');
             $table->rememberToken();
             $table->timestamps();
         });

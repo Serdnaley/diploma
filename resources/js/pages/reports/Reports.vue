@@ -25,7 +25,7 @@
             align="middle"
         >
             <el-tabs
-                v-model="filter_data.active_tab"
+                v-model="filter_data.type"
                 class="stylized-tabs"
             >
                 <el-tab-pane
@@ -44,14 +44,39 @@
 
             <el-date-picker
                 class="date-range"
-                v-model="filter_data.date_range"
+                v-model="filter_data.date"
                 format="MMMM yyyy"
                 value-format="yyyy-MM-dd"
-                :type="filter_data.group_by === 'month' ? 'monthrange' : 'daterange'"
+                type="monthrange"
                 align="right"
                 start-placeholder="Начальная дата"
                 end-placeholder="Конечная дата"
+                :clearable="false"
             />
+
+            <div class="header-divider"/>
+
+            <remote-select
+                v-model="filter_data.category"
+                :method="getCategories"
+                clearable
+                placeholder="Выбрать комиссию"
+            >
+                <el-option
+                    value="all"
+                    label="Все"
+                />
+                <el-option
+                    value="without"
+                    label="Без комиссии"
+                />
+                <template v-slot:item="{item}">
+                    <el-option
+                        :value="item.id"
+                        :label="item.name"
+                    />
+                </template>
+            </remote-select>
 
         </el-row>
 
@@ -102,9 +127,9 @@
                                     <el-col :span="8">
                                         <div
                                             v-if="report.status === 'new'"
-                                            class="color-warning"
+                                            class="color-danger"
                                         >
-                                            Запланированно
+                                            Нет отчетов
                                         </div>
                                         <div
                                             v-if="report.status === 'planned'"
@@ -114,9 +139,12 @@
                                         </div>
                                         <div
                                             v-if="report.status === 'expired'"
-                                            class="color-danger"
+                                            class="color-info"
                                         >
-                                            Запланированно на {{ report.date | formatDate }}
+                                            Запланированно на {{ report.date | formatDate }},
+                                            <div class="color-danger">
+                                                нужно было пройти {{ report.real_date | formatDate }}
+                                            </div>
                                         </div>
                                         <div
                                             v-if="report.status === 'done'"
@@ -169,30 +197,33 @@
     import {formatDate} from "../../util/filters";
     import {errorHandler} from "../../util";
     import {mapGetters, mapActions} from 'vuex';
+    import RemoteSelect from "../../components/RemoteSelect";
 
     export default {
         name: "Reports",
-
+        components: {RemoteSelect},
         filters: {
             formatDate,
         },
 
         data() {
             return {
-                filter_data: {
-                    active_tab: 'fluorography',
-                    group_by: 'month',
-                    date_range: [
+                filter_data_defaults: {
+                    type: 'fluorography',
+                    date: [
                         moment().subtract(1, 'year').format('YYYY-MM-DD'),
                         moment().format('YYYY-MM-DD'),
                     ],
+                    category: 'all',
                 },
+                filter_data: {},
+
                 loading: false,
             }
         },
 
-        created() {
-            this.fetchData();
+        beforeRouteEnter(to, from, next) {
+            next(vm => vm.fetchData());
         },
 
         computed: {
@@ -200,25 +231,42 @@
         },
 
         watch: {
-            filter_data: {
-                deep: true,
-                handler() {
+
+            '$route.query': {
+                handler(query) {
+                    this.filter_data = _.defaults({}, query, this.filter_data_defaults);
                     this.fetchData();
-                }
+                },
+                immediate: true,
+                deep: true,
+            },
+
+            filter_data: {
+                handler() {
+                    const query = _.transform(this.filter_data, (result, val, key) => {
+                        if (this.filter_data_defaults[key] !== val && val) {
+                            result[key] = val;
+                        }
+                    });
+
+                    this.$router.replace({query}).catch(_.noop);
+                },
+                deep: true
             },
         },
 
         methods: {
-            ...mapActions(['getReports', "deleteReport"]),
+            ...mapActions(['getReports', "deleteReport", "getCategories"]),
 
             async fetchData() {
                 this.loading = true;
 
                 await this
                     .getReports({
-                        from: this.filter_data.date_range[0],
-                        to: this.filter_data.date_range[1],
-                        type: this.filter_data.active_tab
+                        from: this.filter_data.date[0],
+                        to: this.filter_data.date[1],
+                        type: this.filter_data.type,
+                        category: this.filter_data.category,
                     })
                     .catch((err) => {
                         this.$message.error(errorHandler(err).message || 'Не удалось загрузить комиссии')
@@ -268,7 +316,7 @@
                 await this
                     .deleteReport({id: item.id})
                     .catch(err => {
-                        this.$message.error(errorHandler(err).message || 'Не удалось удалить пользователя');
+                        this.$message.error(errorHandler(err).message || 'Не удалось удалить отчет');
                     });
 
                 this.loading = false;

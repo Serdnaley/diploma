@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Str;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
@@ -58,6 +59,9 @@ class User extends Authenticatable implements JWTSubject
         'role',
         'email',
 //        'password',
+
+        'telegram_chat_id',
+        'fast_auth_token',
     ];
 
     /**
@@ -98,6 +102,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsTo(UserCategory::class);
     }
 
+    public function telegram_chat()
+    {
+        return $this->belongsTo(TelegramChat::class);
+    }
+
     /**
      * Проверяет есть ли у пользователя роль из переданных
      *
@@ -113,6 +122,62 @@ class User extends Authenticatable implements JWTSubject
         }
 
         return false;
+    }
+
+
+    /**
+     * Генерируем новый токен быстрой авторизации для юзера
+     *
+     * @return bool
+     */
+    public function makeFastAuthToken()
+    {
+
+        $this->fast_auth_token = null;
+
+        for ($i = 0; $i <= 100; $i++) {
+            $token = Str::random(20);
+
+            if (!User::where(['fast_auth_token' => $token])->first()) {
+                $this->fast_auth_token = $token;
+                break;
+            }
+
+        }
+
+        $this->save();
+
+        return false;
+    }
+
+
+        public function getAuthUrlAttribute()
+    {
+        $path = '/';
+        $attributes = [
+            'auth_token' => $this->fast_auth_token
+        ];
+
+        $url = config('app.front_url');
+
+        if ( $path ) {
+            $url = trim($url, '/') . '/' . trim($path, '/');
+        }
+
+        if ( $attributes ) {
+            $url .= '?' . http_build_query($attributes);
+        }
+
+        return $url;
+    }
+
+    public function getFastAuthTokenAttribute($value)
+    {
+        if (!$value) {
+            $this->makeFastAuthToken();
+        }
+
+        return $this->attributes['fast_auth_token'];
     }
 
     /**

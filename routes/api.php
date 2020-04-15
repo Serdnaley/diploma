@@ -19,6 +19,10 @@ Route::group([
     'namespace' => 'API',
 ], function () {
 
+    Route::any('telegram/' . Telegram::getAccessToken() . '/webhook', 'Telegram\TelegramController@webhook')->name('telegram.webhook');
+    Route::any('telegram/' . Telegram::getAccessToken() . '/setWebhook', 'Telegram\TelegramController@setWebhook')->name('telegram.setWebhook');
+
+
     // Авторизация
     Route::group(['prefix' => 'auth'], function () {
         Route::post('login', 'AuthController@login');

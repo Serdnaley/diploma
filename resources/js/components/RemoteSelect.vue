@@ -23,6 +23,7 @@
             ...$listeners
         }"
     >
+        <slot/>
         <slot
             name="item"
             v-for="item in options"

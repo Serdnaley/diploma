@@ -15,8 +15,11 @@ export default {
             let used_dates = {};
 
             state.reports.map(user => {
-                if (user.reports) {
-                    user.reports.map(report => {
+                let reports = [...user.reports];
+                if (reports) {
+                    reports
+                        .sort((a,b) => moment(b.date) - moment(a.date))
+                        .map(report => {
                         if (report.id && used_dates.hasOwnProperty(report.id)) {
                             return false;
                         }
@@ -25,15 +28,20 @@ export default {
 
                         report.user = _.cloneDeep(user);
 
+                        let last_year = moment().subtract(1, 'year');
+
                         if (!report.id) {
                             if (!report.date) {
                                 report.status = 'new'
-                            } else {
-                                if (moment(report.date) < moment().subtract(1, 'year')) {
+                            } else if (report.real_date) {
+                                if (moment(report.real_date) < last_year && moment(report.date) < last_year) {
+                                    report.term = moment(report.real_date).add(1, 'year').format('YYYY-MM-DD');
                                     report.status = 'expired'
                                 } else {
                                     report.status = 'planned'
                                 }
+                            } else {
+                                report.status = 'planned'
                             }
                         } else {
                             report.status = 'done'

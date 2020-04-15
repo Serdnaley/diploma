@@ -2,12 +2,12 @@ import Vue from 'vue';
 
 import './bootstrap';
 
-import Layout from './pages/Layout';
+import App from './pages/App';
 
 import '../scss/style.scss';
 
 new Vue({
     router: Vue.router,
     store: Vue.store,
-    render: h => h(Layout),
+    render: h => h(App),
 }).$mount('#app');
