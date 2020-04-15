@@ -141,9 +141,11 @@
                                             v-if="report.status === 'expired'"
                                             class="color-info"
                                         >
-                                            Запланированно на {{ report.date | formatDate }},
+                                            <template v-if="formatDate(report.date) !== formatDate(report.term)">
+                                                Запланированно на {{ report.date | formatDate }},
+                                            </template>
                                             <div class="color-danger">
-                                                нужно было пройти {{ report.real_date | formatDate }}
+                                                Нужно было пройти {{ report.term | formatDate }}
                                             </div>
                                         </div>
                                         <div
@@ -201,7 +203,11 @@
 
     export default {
         name: "Reports",
-        components: {RemoteSelect},
+
+        components: {
+            RemoteSelect,
+        },
+
         filters: {
             formatDate,
         },
@@ -257,6 +263,8 @@
 
         methods: {
             ...mapActions(['getReports', "deleteReport", "getCategories"]),
+
+            formatDate,
 
             async fetchData() {
                 this.loading = true;

@@ -10,55 +10,63 @@ export default {
     },
 
     getters: {
+
+        report: (state) => state.report,
+
         reports: (state) => {
             let result = [];
             let used_dates = {};
+            let last_year = moment().subtract(1, 'year');
+            let now = moment();
 
             state.reports.map(user => {
                 let reports = [...user.reports];
                 if (reports) {
                     reports
-                        .sort((a,b) => moment(b.date) - moment(a.date))
+                        .sort((a, b) => moment(b.date) - moment(a.date))
                         .map(report => {
-                        if (report.id && used_dates.hasOwnProperty(report.id)) {
-                            return false;
-                        }
 
-                        report = _.clone(report);
+                            report = _.clone(report);
 
-                        report.user = _.cloneDeep(user);
+                            report.user = _.cloneDeep(user);
 
-                        let last_year = moment().subtract(1, 'year');
+                            if (!report.id) {
+                                if (!report.date) {
+                                    report.status = 'new'
+                                } else if (report.real_date && moment(report.real_date) < last_year && moment(report.date) < now) {
+                                    report.term = moment(report.real_date).add(1, 'year').toISOString();
+                                    report.status = 'expired';
 
-                        if (!report.id) {
-                            if (!report.date) {
-                                report.status = 'new'
-                            } else if (report.real_date) {
-                                if (moment(report.real_date) < last_year && moment(report.date) < last_year) {
-                                    report.term = moment(report.real_date).add(1, 'year').format('YYYY-MM-DD');
-                                    report.status = 'expired'
+                                    // "2019-02-15T00:00:00.000000Z"
+                                    // "2020-02-15T02:00:00. 000+02:00"
                                 } else {
                                     report.status = 'planned'
                                 }
                             } else {
-                                report.status = 'planned'
+                                report.status = 'done'
                             }
-                        } else {
-                            report.status = 'done'
-                        }
 
-                        used_dates[report.id] = moment(report.date).format('YYYY-MM-DD');
-                        result.push(report);
-                    })
+                            if (report.id && used_dates.hasOwnProperty(report.id)) {
+
+                                if (report.status === 'expired') {
+                                    let existed_report = _.find(result, {id: report.id});
+                                    existed_report.status = 'expired';
+                                }
+
+                                return false;
+                            }
+
+                            used_dates[report.id] = moment(report.date).format('YYYY-MM-DD');
+                            result.push(report);
+                        })
                 }
             });
 
             return result;
         },
-        report: (state) => state.report,
 
         reports_sorted_by_date: (state, getters) => {
-            return [...getters.reports].sort((a,b) => moment(b.date) - moment(a.date))
+            return [...getters.reports].sort((a, b) => moment(b.date) - moment(a.date))
         },
 
         reports_grouped_by_month: (state, getters) => {
@@ -111,7 +119,7 @@ export default {
 
     actions: {
 
-        async getReports({ commit }, data = {}) {
+        async getReports({commit}, data = {}) {
             let res = await axios.get(`report?${queryString(data)}`);
 
             commit('get_reports', res.data);
@@ -119,7 +127,7 @@ export default {
             return res;
         },
 
-        async addReport({ commit }, data = {}) {
+        async addReport({commit}, data = {}) {
             let res = await axios.post(`report`, data);
 
             commit('add_report', res.data);
@@ -127,7 +135,7 @@ export default {
             return res;
         },
 
-        async getReport({ commit }, data = {}) {
+        async getReport({commit}, data = {}) {
             let res = await axios.get(`report/${data.id}`);
 
             commit('get_report', res.data);
@@ -135,7 +143,7 @@ export default {
             return res;
         },
 
-        async updateReport({ commit }, data = {}) {
+        async updateReport({commit}, data = {}) {
             let res = await axios.put(`report/${data.id}`, data);
 
             commit('update_report', res.data);
@@ -143,7 +151,7 @@ export default {
             return res;
         },
 
-        async deleteReport({ commit }, data) {
+        async deleteReport({commit}, data) {
             let res = await axios.delete(`report/${data.id}`);
 
             commit('delete_report', data);
