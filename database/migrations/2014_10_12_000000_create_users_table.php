@@ -23,7 +23,7 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->integer('user_category_id')->nullable();
             $table->string('password');
-            $table->integer('telegram_chat_id');
+            $table->integer('telegram_chat_id')->nullable();
             $table->string('fast_auth_token');
             $table->rememberToken();
             $table->timestamps();
