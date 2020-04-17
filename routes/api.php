@@ -18,10 +18,9 @@ use Illuminate\Support\Facades\Route;
 Route::group([
     'namespace' => 'API',
 ], function () {
-
-    Route::any('telegram/' . Telegram::getAccessToken() . '/webhook', 'Telegram\TelegramController@webhook')->name('telegram.webhook');
-    Route::any('telegram/' . Telegram::getAccessToken() . '/setWebhook', 'Telegram\TelegramController@setWebhook')->name('telegram.setWebhook');
-
+//dd(TelegramAPI::getAccessToken());
+    Route::any('telegram/' . TelegramAPI::getAccessToken() . '/webhook', 'Telegram\TelegramController@webhook')->name('telegram.webhook');
+    Route::any('telegram/' . TelegramAPI::getAccessToken() . '/setWebhook', 'Telegram\TelegramController@setWebhook')->name('telegram.setWebhook');
 
     // Авторизация
     Route::group(['prefix' => 'auth'], function () {
@@ -37,6 +36,7 @@ Route::group([
     Route::apiResource('user', 'UserController');
     Route::apiResource('category', 'UserCategoryController');
     Route::apiResource('report', 'ReportController');
+    Route::apiResource('telegram_chat', 'Telegram\TelegramChatController');
 
 
     // Редактируем профиль

@@ -3,7 +3,7 @@
 
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 7.1.3 on 2020-04-15 07:19:51.
+ * Generated for Laravel 7.6.1 on 2020-04-15 17:54:24.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -701,6 +701,19 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
+         * Add new prefix to list of absolute path prefixes.
+         *
+         * @param string $prefix
+         * @return \Illuminate\Foundation\Application 
+         * @static 
+         */ 
+        public static function addAbsoluteCachePathPrefix($prefix)
+        {
+                        /** @var \Illuminate\Foundation\Application $instance */
+                        return $instance->addAbsoluteCachePathPrefix($prefix);
+        }
+        
+        /**
          * Determine if the application is currently down for maintenance.
          *
          * @return bool 
@@ -1228,9 +1241,10 @@ namespace Illuminate\Support\Facades {
          * Call the given Closure / class@method and inject its dependencies.
          *
          * @param callable|string $callback
-         * @param array $parameters
+         * @param \Illuminate\Container\array<string,  mixed>  $parameters
          * @param string|null $defaultMethod
          * @return mixed 
+         * @throws \InvalidArgumentException
          * @static 
          */ 
         public static function call($callback, $parameters = [], $defaultMethod = null)
@@ -1260,6 +1274,7 @@ namespace Illuminate\Support\Facades {
          * @param string $abstract
          * @param array $parameters
          * @return mixed 
+         * @throws \Illuminate\Contracts\Container\BindingResolutionException
          * @static 
          */ 
         public static function makeWith($abstract, $parameters = [])
@@ -1288,7 +1303,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Instantiate a concrete instance of the given type.
          *
-         * @param string $concrete
+         * @param \Closure|string $concrete
          * @return mixed 
          * @throws \Illuminate\Contracts\Container\BindingResolutionException
          * @static 
@@ -6468,7 +6483,7 @@ namespace Illuminate\Support\Facades {
      *
      * @method static \Illuminate\Http\Client\PendingRequest asJson()
      * @method static \Illuminate\Http\Client\PendingRequest asForm()
-     * @method static \Illuminate\Http\Client\PendingRequest attach(string $name, string $contents, string|null $filename = null, array $headers)
+     * @method static \Illuminate\Http\Client\PendingRequest attach(string $name, string $contents, string|null $filename = null, array $headers = [])
      * @method static \Illuminate\Http\Client\PendingRequest asMultipart()
      * @method static \Illuminate\Http\Client\PendingRequest bodyFormat(string $format)
      * @method static \Illuminate\Http\Client\PendingRequest contentType(string $contentType)
@@ -6588,6 +6603,31 @@ namespace Illuminate\Support\Facades {
         {
                         /** @var \Illuminate\Http\Client\Factory $instance */
                         $instance->assertSent($callback);
+        }
+        
+        /**
+         * Assert that a request / response pair was not recorded matching a given truth test.
+         *
+         * @param callable $callback
+         * @return void 
+         * @static 
+         */ 
+        public static function assertNotSent($callback)
+        {
+                        /** @var \Illuminate\Http\Client\Factory $instance */
+                        $instance->assertNotSent($callback);
+        }
+        
+        /**
+         * Assert that no request / response pair was recorded.
+         *
+         * @return void 
+         * @static 
+         */ 
+        public static function assertNothingSent()
+        {
+                        /** @var \Illuminate\Http\Client\Factory $instance */
+                        $instance->assertNothingSent();
         }
         
         /**
@@ -10093,7 +10133,9 @@ namespace Illuminate\Support\Facades {
          * Gets the preferred format for the response by inspecting, in the following order:
          *   * the request format set using setRequestFormat
          *   * the values of the Accept HTTP header
-         *   * the content type of the body of the request.
+         * 
+         * Note that if you use this method, you should send the "Vary: Accept" header
+         * in the response to prevent any issues with intermediary HTTP caches.
          *
          * @static 
          */ 
@@ -10934,7 +10976,7 @@ namespace Illuminate\Support\Facades {
          * Create a new redirect response to a named route.
          *
          * @param string $route
-         * @param array $parameters
+         * @param mixed $parameters
          * @param int $status
          * @param array $headers
          * @return \Illuminate\Http\RedirectResponse 
@@ -10950,7 +10992,7 @@ namespace Illuminate\Support\Facades {
          * Create a new redirect response to a controller action.
          *
          * @param string $action
-         * @param array $parameters
+         * @param mixed $parameters
          * @param int $status
          * @param array $headers
          * @return \Illuminate\Http\RedirectResponse 
@@ -11295,13 +11337,14 @@ namespace Illuminate\Support\Facades {
          * Merge the given array with the last group stack.
          *
          * @param array $new
+         * @param bool $prependExistingPrefix
          * @return array 
          * @static 
          */ 
-        public static function mergeWithLastGroup($new)
+        public static function mergeWithLastGroup($new, $prependExistingPrefix = true)
         {
                         /** @var \Illuminate\Routing\Router $instance */
-                        return $instance->mergeWithLastGroup($new);
+                        return $instance->mergeWithLastGroup($new, $prependExistingPrefix);
         }
         
         /**
@@ -15169,19 +15212,6 @@ namespace App\Facades {
         }
         
         /**
-         * Invoke Bots Manager.
-         *
-         * @param $config
-         * @return \Telegram\Bot\BotsManager 
-         * @static 
-         */ 
-        public static function manager($config)
-        {
-            //Method inherited from \Telegram\Bot\Api            
-                        return \App\Services\Telegram\TelegramAPI::manager($config);
-        }
-        
-        /**
          * Returns the TelegramClient service.
          *
          * @return \Telegram\Bot\TelegramClient 
@@ -15276,12 +15306,80 @@ namespace App\Facades {
         }
         
         /**
+         * Add Telegram Command to the Command Bus.
+         *
+         * @param \Telegram\Bot\CommandInterface|string $command
+         * @return \Telegram\Bot\CommandBus 
+         * @static 
+         */ 
+        public static function addCommand($command)
+        {
+            //Method inherited from \Telegram\Bot\Api            
+                        /** @var \App\Services\Telegram\TelegramAPI $instance */
+                        return $instance->addCommand($command);
+        }
+        
+        /**
+         * Add Telegram Commands to the Command Bus.
+         *
+         * @param array $commands
+         * @return \Telegram\Bot\CommandBus 
+         * @static 
+         */ 
+        public static function addCommands($commands)
+        {
+            //Method inherited from \Telegram\Bot\Api            
+                        /** @var \App\Services\Telegram\TelegramAPI $instance */
+                        return $instance->addCommands($commands);
+        }
+        
+        /**
+         * Remove Telegram Command to the Command Bus.
+         *
+         * @param string $name
+         * @return \Telegram\Bot\CommandBus 
+         * @static 
+         */ 
+        public static function removeCommand($name)
+        {
+            //Method inherited from \Telegram\Bot\Api            
+                        /** @var \App\Services\Telegram\TelegramAPI $instance */
+                        return $instance->removeCommand($name);
+        }
+        
+        /**
+         * Remove Telegram Commands from the Command Bus.
+         *
+         * @param array $names
+         * @return \Telegram\Bot\CommandBus 
+         * @static 
+         */ 
+        public static function removeCommands($names)
+        {
+            //Method inherited from \Telegram\Bot\Api            
+                        /** @var \App\Services\Telegram\TelegramAPI $instance */
+                        return $instance->removeCommands($names);
+        }
+        
+        /**
+         * Returns list of available commands.
+         *
+         * @return \Telegram\Bot\Commands\Command[] 
+         * @static 
+         */ 
+        public static function getCommands()
+        {
+            //Method inherited from \Telegram\Bot\Api            
+                        /** @var \App\Services\Telegram\TelegramAPI $instance */
+                        return $instance->getCommands();
+        }
+        
+        /**
          * A simple method for testing your bot's auth token.
          * 
          * Returns basic information about the bot in form of a User object.
          *
          * @link https://core.telegram.org/bots/api#getme
-         * @throws TelegramSDKException
          * @return \Telegram\Bot\User 
          * @static 
          */ 
@@ -15301,7 +15399,6 @@ namespace App\Facades {
          *   'text'                     => '',
          *   'parse_mode'               => '',
          *   'disable_web_page_preview' => '',
-         *   'disable_notification'     => '',
          *   'reply_to_message_id'      => '',
          *   'reply_markup'             => '',
          * ];
@@ -15313,10 +15410,8 @@ namespace App\Facades {
          * @var string     $params ['text']
          * @var string     $params ['parse_mode']
          * @var bool       $params ['disable_web_page_preview']
-         * @var bool       $params ['disable_notification']
          * @var int        $params ['reply_to_message_id']
          * @var string     $params ['reply_markup']
-         * @throws TelegramSDKException
          * @return \Telegram\Bot\Message 
          * @static 
          */ 
@@ -15332,10 +15427,9 @@ namespace App\Facades {
          * 
          * <code>
          * $params = [
-         *   'chat_id'              => '',
-         *   'from_chat_id'         => '',
-         *   'disable_notification' => '',
-         *   'message_id'           => '',
+         *   'chat_id'      => '',
+         *   'from_chat_id' => '',
+         *   'message_id'   => '',
          * ];
          * </code>
          *
@@ -15343,9 +15437,7 @@ namespace App\Facades {
          * @param array $params
          * @var int|string $params ['chat_id']
          * @var int        $params ['from_chat_id']
-         * @var bool       $params ['disable_notification']
          * @var int        $params ['message_id']
-         * @throws TelegramSDKException
          * @return \Telegram\Bot\Message 
          * @static 
          */ 
@@ -15361,12 +15453,11 @@ namespace App\Facades {
          * 
          * <code>
          * $params = [
-         *   'chat_id'              => '',
-         *   'photo'                => '',
-         *   'caption'              => '',
-         *   'disable_notification' => '',
-         *   'reply_to_message_id'  => '',
-         *   'reply_markup'         => '',
+         *   'chat_id'             => '',
+         *   'photo'               => '',
+         *   'caption'             => '',
+         *   'reply_to_message_id' => '',
+         *   'reply_markup'        => '',
          * ];
          * </code>
          *
@@ -15375,10 +15466,8 @@ namespace App\Facades {
          * @var int|string $params ['chat_id']
          * @var string     $params ['photo']
          * @var string     $params ['caption']
-         * @var bool       $params ['disable_notification']
          * @var int        $params ['reply_to_message_id']
          * @var string     $params ['reply_markup']
-         * @throws TelegramSDKException
          * @return \Telegram\Bot\Message 
          * @static 
          */ 
@@ -15394,14 +15483,13 @@ namespace App\Facades {
          * 
          * <code>
          * $params = [
-         *   'chat_id'              => '',
-         *   'audio'                => '',
-         *   'duration'             => '',
-         *   'performer'            => '',
-         *   'title'                => '',
-         *   'disable_notification' => '',
-         *   'reply_to_message_id'  => '',
-         *   'reply_markup'         => '',
+         *   'chat_id'             => '',
+         *   'audio'               => '',
+         *   'duration'            => '',
+         *   'performer'           => '',
+         *   'title'               => '',
+         *   'reply_to_message_id' => '',
+         *   'reply_markup'        => '',
          * ];
          * </code>
          *
@@ -15412,10 +15500,8 @@ namespace App\Facades {
          * @var int        $params ['duration']
          * @var string     $params ['performer']
          * @var string     $params ['title']
-         * @var bool       $params ['disable_notification']
          * @var int        $params ['reply_to_message_id']
          * @var string     $params ['reply_markup']
-         * @throws TelegramSDKException
          * @return \Telegram\Bot\Message 
          * @static 
          */ 
@@ -15431,12 +15517,10 @@ namespace App\Facades {
          * 
          * <code>
          * $params = [
-         *   'chat_id'              => '',
-         *   'document'             => '',
-         *   'caption'              => '',
-         *   'disable_notification' => '',
-         *   'reply_to_message_id'  => '',
-         *   'reply_markup'         => '',
+         *   'chat_id'             => '',
+         *   'document'            => '',
+         *   'reply_to_message_id' => '',
+         *   'reply_markup'        => '',
          * ];
          * </code>
          *
@@ -15444,11 +15528,8 @@ namespace App\Facades {
          * @param array $params
          * @var int|string $params ['chat_id']
          * @var string     $params ['document']
-         * @var string     $params ['caption']
-         * @var bool       $params ['disable_notification']
          * @var int        $params ['reply_to_message_id']
          * @var string     $params ['reply_markup']
-         * @throws TelegramSDKException
          * @return \Telegram\Bot\Message 
          * @static 
          */ 
@@ -15464,11 +15545,10 @@ namespace App\Facades {
          * 
          * <code>
          * $params = [
-         *   'chat_id'              => '',
-         *   'sticker'              => '',
-         *   'disable_notification' => '',
-         *   'reply_to_message_id'  => '',
-         *   'reply_markup'         => '',
+         *   'chat_id' => '',
+         *   'sticker' => '',
+         *   'reply_to_message_id' => '',
+         *   'reply_markup' => '',
          * ];
          * </code>
          *
@@ -15476,7 +15556,6 @@ namespace App\Facades {
          * @param array $params
          * @var int|string $params ['chat_id']
          * @var string     $params ['sticker']
-         * @var bool       $params ['disable_notification']
          * @var int        $params ['reply_to_message_id']
          * @var string     $params ['reply_markup']
          * @throws TelegramSDKException
@@ -15495,15 +15574,12 @@ namespace App\Facades {
          * 
          * <code>
          * $params = [
-         *   'chat_id'              => '',
-         *   'video'                => '',
-         *   'duration'             => '',
-         *   'width'                => '',
-         *   'height'               => '',
-         *   'caption'              => '',
-         *   'disable_notification' => '',
-         *   'reply_to_message_id'  => '',
-         *   'reply_markup'         => '',
+         *   'chat_id'             => '',
+         *   'video'               => '',
+         *   'duration'            => '',
+         *   'caption'             => '',
+         *   'reply_to_message_id' => '',
+         *   'reply_markup'        => '',
          * ];
          * </code>
          *
@@ -15513,13 +15589,9 @@ namespace App\Facades {
          * @var int|string $params ['chat_id']
          * @var string     $params ['video']
          * @var int        $params ['duration']
-         * @var int        $params ['width']
-         * @var int        $params ['height']
          * @var string     $params ['caption']
-         * @var bool       $params ['disable_notification']
          * @var int        $params ['reply_to_message_id']
          * @var string     $params ['reply_markup']
-         * @throws TelegramSDKException
          * @return \Telegram\Bot\Message 
          * @static 
          */ 
@@ -15535,12 +15607,11 @@ namespace App\Facades {
          * 
          * <code>
          * $params = [
-         *   'chat_id'              => '',
-         *   'voice'                => '',
-         *   'duration'             => '',
-         *   'disable_notification' => '',
-         *   'reply_to_message_id'  => '',
-         *   'reply_markup'         => '',
+         *   'chat_id'             => '',
+         *   'voice'               => '',
+         *   'duration'            => '',
+         *   'reply_to_message_id' => '',
+         *   'reply_markup'        => '',
          * ];
          * </code>
          *
@@ -15549,10 +15620,8 @@ namespace App\Facades {
          * @var int|string $params ['chat_id']
          * @var string     $params ['voice']
          * @var int        $params ['duration']
-         * @var bool       $params ['disable_notification']
          * @var int        $params ['reply_to_message_id']
          * @var string     $params ['reply_markup']
-         * @throws TelegramSDKException
          * @return \Telegram\Bot\Message 
          * @static 
          */ 
@@ -15568,12 +15637,11 @@ namespace App\Facades {
          * 
          * <code>
          * $params = [
-         *   'chat_id'              => '',
-         *   'latitude'             => '',
-         *   'longitude'            => '',
-         *   'disable_notification' => '',
-         *   'reply_to_message_id'  => '',
-         *   'reply_markup'         => '',
+         *   'chat_id'             => '',
+         *   'latitude'            => '',
+         *   'longitude'           => '',
+         *   'reply_to_message_id' => '',
+         *   'reply_markup'        => '',
          * ];
          * </code>
          *
@@ -15582,10 +15650,8 @@ namespace App\Facades {
          * @var int|string $params ['chat_id']
          * @var float      $params ['latitude']
          * @var float      $params ['longitude']
-         * @var bool       $params ['disable_notification']
          * @var int        $params ['reply_to_message_id']
          * @var string     $params ['reply_markup']
-         * @throws TelegramSDKException
          * @return \Telegram\Bot\Message 
          * @static 
          */ 
@@ -15594,80 +15660,6 @@ namespace App\Facades {
             //Method inherited from \Telegram\Bot\Api            
                         /** @var \App\Services\Telegram\TelegramAPI $instance */
                         return $instance->sendLocation($params);
-        }
-        
-        /**
-         * Send information about a venue.
-         * 
-         * <code>
-         * $params = [
-         *   'chat_id'              => '',
-         *   'latitude'             => '',
-         *   'longitude'            => '',
-         *   'title'                => '',
-         *   'address'              => '',
-         *   'foursquare_id'        => '',
-         *   'disable_notification' => '',
-         *   'reply_to_message_id'  => '',
-         *   'reply_markup'         => '',
-         * ];
-         * </code>
-         *
-         * @link https://core.telegram.org/bots/api#sendvenue
-         * @param array $params
-         * @var int|string $params ['chat_id']
-         * @var float      $params ['latitude']
-         * @var float      $params ['longitude']
-         * @var string     $params ['title']
-         * @var string     $params ['address']
-         * @var string     $params ['foursquare_id']
-         * @var bool       $params ['disable_notification']
-         * @var int        $params ['reply_to_message_id']
-         * @var string     $params ['reply_markup']
-         * @throws TelegramSDKException
-         * @return \Telegram\Bot\Message 
-         * @static 
-         */ 
-        public static function sendVenue($params)
-        {
-            //Method inherited from \Telegram\Bot\Api            
-                        /** @var \App\Services\Telegram\TelegramAPI $instance */
-                        return $instance->sendVenue($params);
-        }
-        
-        /**
-         * Send phone contacts.
-         * 
-         * <code>
-         * $params = [
-         *   'chat_id'              => '',
-         *   'phone_number'         => '',
-         *   'first_name'           => '',
-         *   'last_name'            => '',
-         *   'disable_notification' => '',
-         *   'reply_to_message_id'  => '',
-         *   'reply_markup'         => '',
-         * ];
-         * </code>
-         *
-         * @link https://core.telegram.org/bots/api#sendcontact
-         * @param array $params
-         * @var int|string $params ['chat_id']
-         * @var string     $params ['phone_number']
-         * @var string     $params ['first_name']
-         * @var string     $params ['last_name']
-         * @var bool       $params ['disable_notification']
-         * @var int        $params ['reply_to_message_id']
-         * @var string     $params ['reply_markup']
-         * @throws TelegramSDKException
-         * @return \Telegram\Bot\Message 
-         * @static 
-         */ 
-        public static function sendContact($params)
-        {
-            //Method inherited from \Telegram\Bot\Api            
-                        /** @var \App\Services\Telegram\TelegramAPI $instance */
-                        return $instance->sendContact($params);
         }
         
         /**
@@ -15685,7 +15677,7 @@ namespace App\Facades {
          * @var int|string $params ['chat_id']
          * @var string     $params ['action']
          * @throws TelegramSDKException
-         * @return bool 
+         * @return \Telegram\Bot\TelegramResponse 
          * @static 
          */ 
         public static function sendChatAction($params)
@@ -15711,7 +15703,6 @@ namespace App\Facades {
          * @var int     $params ['user_id']
          * @var int     $params ['offset']
          * @var int     $params ['limit']
-         * @throws TelegramSDKException
          * @return \Telegram\Bot\UserProfilePhotos 
          * @static 
          */ 
@@ -15738,7 +15729,6 @@ namespace App\Facades {
          * @link https://core.telegram.org/bots/api#getFile
          * @param array $params
          * @var string  $params ['file_id']
-         * @throws TelegramSDKException
          * @return \File 
          * @static 
          */ 
@@ -15747,319 +15737,6 @@ namespace App\Facades {
             //Method inherited from \Telegram\Bot\Api            
                         /** @var \App\Services\Telegram\TelegramAPI $instance */
                         return $instance->getFile($params);
-        }
-        
-        /**
-         * Kick a user from a group or a supergroup.
-         * 
-         * In the case of supergroups, the user will not be able to return to the group on their own using
-         * invite links etc., unless unbanned first.
-         * 
-         * The bot must be an administrator in the group for this to work.
-         * 
-         * <code>
-         * $params = [
-         *   'chat_id'              => '',
-         *   'user_id'              => '',
-         * ];
-         * </code>
-         *
-         * @link https://core.telegram.org/bots/api#kickchatmember
-         * @param array $params
-         * @var int|string $params ['chat_id']
-         * @var int        $params ['user_id']
-         * @throws TelegramSDKException
-         * @return bool 
-         * @static 
-         */ 
-        public static function kickChatMember($params)
-        {
-            //Method inherited from \Telegram\Bot\Api            
-                        /** @var \App\Services\Telegram\TelegramAPI $instance */
-                        return $instance->kickChatMember($params);
-        }
-        
-        /**
-         * Unban a previously kicked user in a supergroup.
-         * 
-         * The user will not return to the group automatically, but will be able to join via link, etc.
-         * 
-         * The bot must be an administrator in the group for this to work.
-         * 
-         * <code>
-         * $params = [
-         *   'chat_id'              => '',
-         *   'user_id'              => '',
-         * ];
-         * </code>
-         *
-         * @link https://core.telegram.org/bots/api#unbanchatmember
-         * @param array $params
-         * @var int|string $params ['chat_id']
-         * @var int        $params ['user_id']
-         * @throws TelegramSDKException
-         * @return bool 
-         * @static 
-         */ 
-        public static function unbanChatMember($params)
-        {
-            //Method inherited from \Telegram\Bot\Api            
-                        /** @var \App\Services\Telegram\TelegramAPI $instance */
-                        return $instance->unbanChatMember($params);
-        }
-        
-        /**
-         * Get up to date information about the chat (current name of the user for one-on-one conversations,
-         * current username of a user, group or channel,
-         * 
-         * <code>
-         * $params = [
-         *   'chat_id'  => '',
-         * ];
-         * </code>
-         *
-         * @link https://core.telegram.org/bots/api#getchat
-         * @param array $params
-         * @var string|int  $params ['chat_id'] Unique identifier for the target chat or username of the target supergroup or channel (in the format @channelusername)
-         * @throws TelegramSDKException
-         * @return \Telegram\Bot\Chat 
-         * @static 
-         */ 
-        public static function getChat($params)
-        {
-            //Method inherited from \Telegram\Bot\Api            
-                        /** @var \App\Services\Telegram\TelegramAPI $instance */
-                        return $instance->getChat($params);
-        }
-        
-        /**
-         * Get a list of administrators in a chat.
-         * 
-         * <code>
-         * $params = [
-         *   'chat_id'  => '',
-         * ];
-         * </code>
-         *
-         * @link https://core.telegram.org/bots/api#getchatadministrators
-         * @param array $params
-         * @var string|int  $params ['chat_id'] Unique identifier for the target chat or username of the target supergroup or channel (in the format @channelusername);
-         * @throws TelegramSDKException
-         * @return \Telegram\Bot\ChatMember[] 
-         * @static 
-         */ 
-        public static function getChatAdministrators($params)
-        {
-            //Method inherited from \Telegram\Bot\Api            
-                        /** @var \App\Services\Telegram\TelegramAPI $instance */
-                        return $instance->getChatAdministrators($params);
-        }
-        
-        /**
-         * Get the number of members in a chat
-         * 
-         * <code>
-         * $params = [
-         *   'chat_id'  => '',
-         * ];
-         * </code>
-         *
-         * @link https://core.telegram.org/bots/api#getchatmemberscount
-         * @param array $params
-         * @var string|int  $params ['chat_id'] Unique identifier for the target chat or username of the target supergroup or channel (in the format @channelusername)
-         * @throws TelegramSDKException
-         * @return int 
-         * @static 
-         */ 
-        public static function getChatMembersCount($params)
-        {
-            //Method inherited from \Telegram\Bot\Api            
-                        /** @var \App\Services\Telegram\TelegramAPI $instance */
-                        return $instance->getChatMembersCount($params);
-        }
-        
-        /**
-         * Get information about a member of a chat.
-         * 
-         * <code>
-         * $params = [
-         *   'chat_id'  => '',
-         *   'user_id'  => '',
-         * ];
-         * </code>
-         *
-         * @link https://core.telegram.org/bots/api#getchatmember
-         * @param array $params
-         * @var string|int  $params ['chat_id'] Unique identifier for the target chat or username of the target supergroup or channel (in the format @channelusername)
-         * @var int         $params ['user_id'] Unique identifier of the target user.
-         * @throws TelegramSDKException
-         * @return \Telegram\Bot\ChatMember 
-         * @static 
-         */ 
-        public static function getChatMember($params)
-        {
-            //Method inherited from \Telegram\Bot\Api            
-                        /** @var \App\Services\Telegram\TelegramAPI $instance */
-                        return $instance->getChatMember($params);
-        }
-        
-        /**
-         * Send answers to callback queries sent from inline keyboards.
-         * 
-         * he answer will be displayed to the user as a notification at the top of the chat screen or as an alert.
-         * 
-         * <code>
-         * $params = [
-         *   'callback_query_id'  => '',
-         *   'text'               => '',
-         *   'show_alert'         => '',
-         * ];
-         * </code>
-         *
-         * @link https://core.telegram.org/bots/api#answerCallbackQuery
-         * @param array $params
-         * @var string  $params ['callback_query_id']
-         * @var string  $params ['text']
-         * @var bool    $params ['show_alert']
-         * @throws TelegramSDKException
-         * @return bool 
-         * @static 
-         */ 
-        public static function answerCallbackQuery($params)
-        {
-            //Method inherited from \Telegram\Bot\Api            
-                        /** @var \App\Services\Telegram\TelegramAPI $instance */
-                        return $instance->answerCallbackQuery($params);
-        }
-        
-        /**
-         * Edit text messages sent by the bot or via the bot (for inline bots).
-         * 
-         * <code>
-         * $params = [
-         *   'chat_id'                  => '',
-         *   'message_id'               => '',
-         *   'inline_message_id'        => '',
-         *   'text'                     => '',
-         *   'parse_mode'               => '',
-         *   'disable_web_page_preview' => '',
-         *   'reply_markup'             => '',
-         * ];
-         * </code>
-         *
-         * @link https://core.telegram.org/bots/api#editMessageText
-         * @param array $params
-         * @var int|string $params ['chat_id']
-         * @var int        $params ['message_id']
-         * @var string     $params ['inline_message_id']
-         * @var string     $params ['text']
-         * @var string     $params ['parse_mode']
-         * @var bool       $params ['disable_web_page_preview']
-         * @var string     $params ['reply_markup']
-         * @throws TelegramSDKException
-         * @return \Telegram\Bot\Message|bool 
-         * @static 
-         */ 
-        public static function editMessageText($params)
-        {
-            //Method inherited from \Telegram\Bot\Api            
-                        /** @var \App\Services\Telegram\TelegramAPI $instance */
-                        return $instance->editMessageText($params);
-        }
-        
-        /**
-         * Edit captions of messages sent by the bot or via the bot (for inline bots).
-         * 
-         * <code>
-         * $params = [
-         *   'chat_id'                  => '',
-         *   'message_id'               => '',
-         *   'inline_message_id'        => '',
-         *   'caption'                  => '',
-         *   'reply_markup'             => '',
-         * ];
-         * </code>
-         *
-         * @link https://core.telegram.org/bots/api#editMessageCaption
-         * @param array $params
-         * @var int|string $params ['chat_id']
-         * @var int        $params ['message_id']
-         * @var string     $params ['inline_message_id']
-         * @var string     $params ['caption']
-         * @var string     $params ['reply_markup']
-         * @throws TelegramSDKException
-         * @return \Telegram\Bot\Message|bool 
-         * @static 
-         */ 
-        public static function editMessageCaption($params)
-        {
-            //Method inherited from \Telegram\Bot\Api            
-                        /** @var \App\Services\Telegram\TelegramAPI $instance */
-                        return $instance->editMessageCaption($params);
-        }
-        
-        /**
-         * Edit only the reply markup of messages sent by the bot or via the bot (for inline bots).
-         * 
-         * <code>
-         * $params = [
-         *   'chat_id'                  => '',
-         *   'message_id'               => '',
-         *   'inline_message_id'        => '',
-         *   'reply_markup'             => '',
-         * ];
-         * </code>
-         *
-         * @link https://core.telegram.org/bots/api#editMessageReplyMarkup
-         * @param array $params
-         * @var int|string $params ['chat_id']
-         * @var int        $params ['message_id']
-         * @var string     $params ['inline_message_id']
-         * @var string     $params ['reply_markup']
-         * @throws TelegramSDKException
-         * @return \Telegram\Bot\Message|bool 
-         * @static 
-         */ 
-        public static function editMessageReplyMarkup($params)
-        {
-            //Method inherited from \Telegram\Bot\Api            
-                        /** @var \App\Services\Telegram\TelegramAPI $instance */
-                        return $instance->editMessageReplyMarkup($params);
-        }
-        
-        /**
-         * Use this method to send answers to an inline query.
-         * 
-         * <code>
-         * $params = [
-         *   'inline_query_id'      => '',
-         *   'results'              => [],
-         *   'cache_time'           => 0,
-         *   'is_personal'          => false,
-         *   'next_offset'          => '',
-         *   'switch_pm_text'       => '',
-         *   'switch_pm_parameter'  => '',
-         * ];
-         * </code>
-         *
-         * @link https://core.telegram.org/bots/api#answerinlinequery
-         * @param array $params
-         * @var string      $params ['inline_query_id']
-         * @var array       $params ['results']
-         * @var int|null    $params ['cache_time']
-         * @var bool|null   $params ['is_personal']
-         * @var string|null $params ['next_offset']
-         * @var string|null $params ['switch_pm_text']
-         * @var string|null $params ['switch_pm_parameter']
-         * @throws TelegramSDKException
-         * @return bool 
-         * @static 
-         */ 
-        public static function answerInlineQuery($params = [])
-        {
-            //Method inherited from \Telegram\Bot\Api            
-                        /** @var \App\Services\Telegram\TelegramAPI $instance */
-                        return $instance->answerInlineQuery($params);
         }
         
         /**
@@ -16089,7 +15766,7 @@ namespace App\Facades {
         }
         
         /**
-         * Returns a webhook update sent by Telegram.
+         * Returns webhook updates sent by Telegram.
          * 
          * Works only if you set a webhook.
          *
@@ -16097,33 +15774,16 @@ namespace App\Facades {
          * @return \Telegram\Bot\Update 
          * @static 
          */ 
-        public static function getWebhookUpdate($shouldEmitEvent = true)
+        public static function getWebhookUpdates()
         {
             //Method inherited from \Telegram\Bot\Api            
                         /** @var \App\Services\Telegram\TelegramAPI $instance */
-                        return $instance->getWebhookUpdate($shouldEmitEvent);
-        }
-        
-        /**
-         * Alias for getWebhookUpdate
-         *
-         * @deprecated Call method getWebhookUpdate (note lack of letter s at end)
-         *             To be removed in next major version.
-         * @param bool $shouldEmitEvent
-         * @return \Telegram\Bot\Update 
-         * @static 
-         */ 
-        public static function getWebhookUpdates($shouldEmitEvent = true)
-        {
-            //Method inherited from \Telegram\Bot\Api            
-                        /** @var \App\Services\Telegram\TelegramAPI $instance */
-                        return $instance->getWebhookUpdates($shouldEmitEvent);
+                        return $instance->getWebhookUpdates();
         }
         
         /**
          * Removes the outgoing webhook (if any).
          *
-         * @throws TelegramSDKException
          * @return \Telegram\Bot\TelegramResponse 
          * @static 
          */ 
@@ -16147,19 +15807,17 @@ namespace App\Facades {
          *
          * @link https://core.telegram.org/bots/api#getupdates
          * @param array $params
-         * @param bool $shouldEmitEvents
          * @var int|null $params ['offset']
          * @var int|null $params ['limit']
          * @var int|null $params ['timeout']
-         * @throws TelegramSDKException
          * @return \Telegram\Bot\Update[] 
          * @static 
          */ 
-        public static function getUpdates($params = [], $shouldEmitEvents = true)
+        public static function getUpdates($params = [])
         {
             //Method inherited from \Telegram\Bot\Api            
                         /** @var \App\Services\Telegram\TelegramAPI $instance */
-                        return $instance->getUpdates($params, $shouldEmitEvents);
+                        return $instance->getUpdates($params);
         }
         
         /**
@@ -16174,8 +15832,6 @@ namespace App\Facades {
          * ];
          * </code>
          *
-         * @deprecated Use Telegram\Bot\Keyboard\Keyboard::make(array $params = []) instead.
-         *             To be removed in next major version.
          * @link https://core.telegram.org/bots/api#replykeyboardmarkup
          * @param array $params
          * @var array   $params ['keyboard']
@@ -16202,8 +15858,6 @@ namespace App\Facades {
          * ];
          * </code>
          *
-         * @deprecated Use Telegram\Bot\Keyboard\Keyboard::hide(array $params = []) instead.
-         *             To be removed in next major version.
          * @link https://core.telegram.org/bots/api#replykeyboardhide
          * @param array $params
          * @var bool    $params ['hide_keyboard']
@@ -16227,13 +15881,11 @@ namespace App\Facades {
          * ];
          * </code>
          *
-         * @deprecated Use Telegram\Bot\Keyboard\Keyboard::forceReply(array $params = []) instead.
-         *             To be removed in next major version.
          * @link https://core.telegram.org/bots/api#forcereply
          * @param array $params
          * @var bool    $params ['force_reply']
          * @var bool    $params ['selective']
-         * @return \Telegram\Bot\Keyboard 
+         * @return string 
          * @static 
          */ 
         public static function forceReply($params = [])
@@ -16246,53 +15898,22 @@ namespace App\Facades {
          * Processes Inbound Commands.
          *
          * @param bool $webhook
-         * @param array $params
          * @return \Telegram\Bot\Update|\Telegram\Bot\Update[] 
          * @static 
          */ 
-        public static function commandsHandler($webhook = false, $params = [])
+        public static function commandsHandler($webhook = false)
         {
             //Method inherited from \Telegram\Bot\Api            
                         /** @var \App\Services\Telegram\TelegramAPI $instance */
-                        return $instance->commandsHandler($webhook, $params);
-        }
-        
-        /**
-         * Check update object for a command and process.
-         *
-         * @param \Telegram\Bot\Update $update
-         * @static 
-         */ 
-        public static function processCommand($update)
-        {
-            //Method inherited from \Telegram\Bot\Api            
-                        /** @var \App\Services\Telegram\TelegramAPI $instance */
-                        return $instance->processCommand($update);
-        }
-        
-        /**
-         * Helper to Trigger Commands.
-         *
-         * @param string $name Command Name
-         * @param \Telegram\Bot\Update $update Update Object
-         * @return mixed 
-         * @static 
-         */ 
-        public static function triggerCommand($name, $update)
-        {
-            //Method inherited from \Telegram\Bot\Api            
-                        /** @var \App\Services\Telegram\TelegramAPI $instance */
-                        return $instance->triggerCommand($name, $update);
+                        return $instance->commandsHandler($webhook);
         }
         
         /**
          * Determine if a given type is the message.
          *
-         * @deprecated Call method isType directly on Message object
-         *             To be removed in next major version.
          * @param string $type
          * @param \Telegram\Bot\Update|\Telegram\Bot\Message $object
-         * @throws \ErrorException
+         * @return bool 
          * @static 
          */ 
         public static function isMessageType($type, $object)
@@ -16305,10 +15926,7 @@ namespace App\Facades {
         /**
          * Detect Message Type Based on Update or Message Object.
          *
-         * @deprecated Call method detectType directly on Message object
-         *             To be removed in next major version.
          * @param \Telegram\Bot\Update|\Telegram\Bot\Message $object
-         * @throws \ErrorException
          * @return string|null 
          * @static 
          */ 
@@ -16410,32 +16028,6 @@ namespace App\Facades {
             //Method inherited from \Telegram\Bot\Api            
                         /** @var \App\Services\Telegram\TelegramAPI $instance */
                         return $instance->setConnectTimeOut($connectTimeOut);
-        }
-        
-        /**
-         * 
-         *
-         * @return \Telegram\Bot\Emitter 
-         * @static 
-         */ 
-        public static function getEventEmitter()
-        {
-            //Method inherited from \Telegram\Bot\Api            
-                        /** @var \App\Services\Telegram\TelegramAPI $instance */
-                        return $instance->getEventEmitter();
-        }
-        
-        /**
-         * 
-         *
-         * @param \Telegram\Bot\Emitter $eventEmitter
-         * @static 
-         */ 
-        public static function setEventEmitter($eventEmitter)
-        {
-            //Method inherited from \Telegram\Bot\Api            
-                        /** @var \App\Services\Telegram\TelegramAPI $instance */
-                        return $instance->setEventEmitter($eventEmitter);
         }
          
     }
@@ -16807,135 +16399,6 @@ namespace Facade\Ignition\Facades {
         {
                         /** @var \Facade\FlareClient\Flare $instance */
                         return $instance->group($groupName, $properties);
-        }
-         
-    }
- 
-}
-
-namespace Telegram\Bot\Laravel\Facades { 
-
-    /**
-     * Class Telegram.
-     *
-     */ 
-    class Telegram {
-        
-        /**
-         * Set the IoC Container.
-         *
-         * @param $container Container instance
-         * @return \Telegram\Bot\BotsManager 
-         * @static 
-         */ 
-        public static function setContainer($container)
-        {
-                        /** @var \Telegram\Bot\BotsManager $instance */
-                        return $instance->setContainer($container);
-        }
-        
-        /**
-         * Get the configuration for a bot.
-         *
-         * @param string|null $name
-         * @throws \InvalidArgumentException
-         * @return array 
-         * @static 
-         */ 
-        public static function getBotConfig($name = null)
-        {
-                        /** @var \Telegram\Bot\BotsManager $instance */
-                        return $instance->getBotConfig($name);
-        }
-        
-        /**
-         * Get a bot instance.
-         *
-         * @param string $name
-         * @return \Telegram\Bot\Api 
-         * @static 
-         */ 
-        public static function bot($name = null)
-        {
-                        /** @var \Telegram\Bot\BotsManager $instance */
-                        return $instance->bot($name);
-        }
-        
-        /**
-         * Reconnect to the given bot.
-         *
-         * @param string $name
-         * @return \Telegram\Bot\Api 
-         * @static 
-         */ 
-        public static function reconnect($name = null)
-        {
-                        /** @var \Telegram\Bot\BotsManager $instance */
-                        return $instance->reconnect($name);
-        }
-        
-        /**
-         * Disconnect from the given bot.
-         *
-         * @param string $name
-         * @return void 
-         * @static 
-         */ 
-        public static function disconnect($name = null)
-        {
-                        /** @var \Telegram\Bot\BotsManager $instance */
-                        $instance->disconnect($name);
-        }
-        
-        /**
-         * Get the specified configuration value for Telegram.
-         *
-         * @param string $key
-         * @param mixed $default
-         * @return mixed 
-         * @static 
-         */ 
-        public static function getConfig($key, $default = null)
-        {
-                        /** @var \Telegram\Bot\BotsManager $instance */
-                        return $instance->getConfig($key, $default);
-        }
-        
-        /**
-         * Get the default bot name.
-         *
-         * @return string 
-         * @static 
-         */ 
-        public static function getDefaultBot()
-        {
-                        /** @var \Telegram\Bot\BotsManager $instance */
-                        return $instance->getDefaultBot();
-        }
-        
-        /**
-         * Set the default bot name.
-         *
-         * @param string $name
-         * @return \Telegram\Bot\BotsManager 
-         * @static 
-         */ 
-        public static function setDefaultBot($name)
-        {
-                        /** @var \Telegram\Bot\BotsManager $instance */
-                        return $instance->setDefaultBot($name);
-        }
-        
-        /**
-         * Return all of the created bots.
-         *
-         * @return \Telegram\Bot\Api[] 
-         * @static 
-         */ 
-        public static function getBots()
-        {
-                        /** @var \Telegram\Bot\BotsManager $instance */
-                        return $instance->getBots();
         }
          
     }
@@ -19672,7 +19135,7 @@ namespace  {
             /**
              * Add an "order by" clause to the query.
              *
-             * @param \Closure|\Illuminate\Database\Query\Builder|string $column
+             * @param \Closure|\Illuminate\Database\Query\Builder|\Illuminate\Database\Query\Expression|string $column
              * @param string $direction
              * @return \Illuminate\Database\Query\Builder 
              * @throws \InvalidArgumentException
@@ -19818,6 +19281,18 @@ namespace  {
             {
                                 /** @var \Illuminate\Database\Query\Builder $instance */
                                 return $instance->forPageAfterId($perPage, $lastId, $column);
+            }
+         
+            /**
+             * Remove all existing orders and optionally add a new order.
+             *
+             * @return \Illuminate\Database\Query\Builder 
+             * @static 
+             */ 
+            public static function reorder($column = null, $direction = 'asc')
+            {
+                                /** @var \Illuminate\Database\Query\Builder $instance */
+                                return $instance->reorder($column, $direction);
             }
          
             /**
@@ -20417,8 +19892,6 @@ namespace  {
     class TelegramBot extends \App\Facades\TelegramBotService {}
 
     class Flare extends \Facade\Ignition\Facades\Flare {}
-
-    class Telegram extends \Telegram\Bot\Laravel\Facades\Telegram {}
 
     class JWTAuth extends \Tymon\JWTAuth\Facades\JWTAuth {}
 

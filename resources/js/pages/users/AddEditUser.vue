@@ -104,6 +104,25 @@
                 />
             </el-form-item>
 
+            <el-form-item
+                label="Telegram:"
+                prop="telegram_chat_id"
+            >
+                <remote-select
+                    v-model="user_clone.telegram_chat_id"
+                    name="user_category_id"
+                    :method="getTelegramChats"
+                    style="width: 100%;"
+                >
+                    <template v-slot:item="{item}">
+                        <el-option
+                            :value="item.id"
+                            :label="item.name"
+                        />
+                    </template>
+                </remote-select>
+            </el-form-item>
+
             <ul v-if="errors" class="color-danger">
                 <li v-for="error in errors">
                     {{ error[0] }}
@@ -246,7 +265,7 @@
         },
 
         methods: {
-            ...mapActions(['getUser', "updateUser", "addUser", "getCategories"]),
+            ...mapActions(['getUser', "updateUser", "addUser", "getCategories", "getTelegramChats"]),
 
             async fetchData() {
                 this.loading = true;

@@ -19,7 +19,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Car $car
  * @property-read mixed $name
  * @property-read \App\User $user
  * @method static bool|null forceDelete()
@@ -77,11 +76,6 @@ class TelegramChat extends Model
     public function user()
     {
         return $this->hasOne(User::class);
-    }
-
-    public function car()
-    {
-        return $this->hasOne(Car::class);
     }
 
     public function getNameAttribute() {

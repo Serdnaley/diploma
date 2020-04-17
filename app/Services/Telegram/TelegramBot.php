@@ -55,7 +55,7 @@ class TelegramBot
     public function webhook()
     {
 
-        $this->saveLocalUpdate();
+//        $this->saveLocalUpdate();
         $updates = TelegramAPI::getWebhookUpdates();
 //        $updates = $this->getLocalUpdates();
 
@@ -331,7 +331,6 @@ class TelegramBot
         } else {
             $body = new \stdClass();
         }
-
         return new Update($body);
     }
 
@@ -351,6 +350,5 @@ class TelegramBot
 
         Storage::disk('public')->put($this->log_file_name, $update);
     }
-
 
 }

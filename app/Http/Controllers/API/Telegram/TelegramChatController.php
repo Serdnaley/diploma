@@ -20,15 +20,15 @@ class TelegramChatController extends Controller
     {
         $chats = TelegramChat::all()->sortBy('name');
 
-        if ($request->filter_by == 'private') {
-            $all = $chats->where('type', '==', 'private');
-        } elseif ($request->filter_by == 'chats') {
-            $all = $chats->where('type', '!=', 'private');
-        } else {
+        if ($request->filter_by == 'all') {
             $groups = $chats->where('type', '!=', 'private');
             $private = $chats->where('type', '==', 'private');
 
             $all = $private->merge($groups);
+        } elseif ($request->filter_by == 'chats') {
+            $all = $chats->where('type', '!=', 'private');
+        } else {
+            $all = $chats->where('type', '==', 'private');
         }
 
         return TelegramChatResource::collection($all);
