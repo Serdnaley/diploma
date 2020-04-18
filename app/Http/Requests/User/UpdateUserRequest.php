@@ -31,7 +31,8 @@ class UpdateUserRequest extends FormRequest
             'last_name' => 'required|string|min:3',
             'patronymic' => 'required|string|min:3',
             'role' => 'required|string|in:admin,user',
-            'user_category_id' => 'required|integer',
+            'user_category_id' => 'nullable|integer',
+            'telegram_chat_id' => 'nullable|integer',
             'email' => [
                 'required',
                 'email',

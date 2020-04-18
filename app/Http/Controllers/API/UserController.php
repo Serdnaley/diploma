@@ -36,6 +36,7 @@ class UserController extends Controller
             'last_name',
             'patronymic',
             'user_category_id',
+            'telegram_chat_id',
             'role',
             'email',
         ]));
@@ -93,6 +94,7 @@ class UserController extends Controller
             'last_name',
             'patronymic',
             'user_category_id',
+            'telegram_chat_id',
             'role',
             'email',
         ]));

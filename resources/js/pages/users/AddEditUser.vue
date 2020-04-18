@@ -95,16 +95,6 @@
             </el-form-item>
 
             <el-form-item
-                label="Телефон:"
-                prop="phone"
-            >
-                <el-input
-                    v-model="user_clone.phone"
-                    name="phone"
-                />
-            </el-form-item>
-
-            <el-form-item
                 label="Telegram:"
                 prop="telegram_chat_id"
             >
@@ -112,11 +102,12 @@
                     v-model="user_clone.telegram_chat_id"
                     name="user_category_id"
                     :method="getTelegramChats"
+                    clearable
                     style="width: 100%;"
                 >
                     <template v-slot:item="{item}">
                         <el-option
-                            :value="item.id"
+                            :value="+item.id"
                             :label="item.name"
                         />
                     </template>
@@ -168,7 +159,6 @@
                     patronymic: '',
                     role: 'user',
                     email: '',
-                    phone: '',
                     user_category_id: '',
                 },
 
@@ -225,18 +215,6 @@
                         {
                             type: 'email',
                             message: 'Неверно введен email',
-                            trigger: 'blur',
-                        },
-                    ],
-                    phone: [
-                        {
-                            required: true,
-                            message: 'Введите номер телефона пользователя',
-                            trigger: 'blur',
-                        },
-                        {
-                            min: 10,
-                            message: 'Неверно введен номер телефона',
                             trigger: 'blur',
                         },
                     ],

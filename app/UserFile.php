@@ -14,6 +14,26 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\UserFile newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\UserFile query()
  * @mixin \Eloquent
+ * @property int $id
+ * @property int|null $owner_id
+ * @property string $name
+ * @property string $original_name
+ * @property string $path
+ * @property string $type
+ * @property string|null $report_id
+ * @property string|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\UserFile whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\UserFile whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\UserFile whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\UserFile whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\UserFile whereOriginalName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\UserFile whereOwnerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\UserFile wherePath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\UserFile whereReportId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\UserFile whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\UserFile whereUpdatedAt($value)
  */
 class UserFile extends Model
 {

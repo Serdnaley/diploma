@@ -5,6 +5,7 @@ import VueRouterBackButton from 'vue-router-back-button';
 Vue.use(VueRouter);
 
 const router = new VueRouter({
+    mode: 'history',
     routes: [
         {
             path: '/',

@@ -23,6 +23,8 @@ class UserResource extends JsonResource
             'full_name',
             'patronymic',
             'user_category_id',
+            'telegram_chat_id',
+            'fast_auth_token',
             'role',
             'email',
         ]);

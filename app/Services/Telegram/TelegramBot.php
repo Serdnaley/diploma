@@ -109,7 +109,8 @@ class TelegramBot
         if ( $this->command == 'Войти в систему' ) {
             TelegramAPI::sendMessage([
                 'chat_id' => $this->chat->id,
-                'text' => "Используйте ссылку для входа в приложение:",
+                'text' => "Используйте ссылку для входа в приложение.".
+                    "\nЕсли ссылка перестала работать - откройте меню и запросите новую.",
                 'parse_mode' => 'Markdown',
                 'reply_markup' => TelegramAPI::replyKeyboardMarkup([
                     'inline_keyboard' => [
@@ -118,13 +119,6 @@ class TelegramBot
                         ]
                     ],
                 ])
-            ]);
-
-            TelegramAPI::sendMessage([
-                'chat_id' => $this->chat->id,
-                'text' => "Если ссылка перестала работать - откройте меню и запросите новую.",
-                'parse_mode' => 'Markdown',
-                'reply_markup' => $this->defaultKeyboard()
             ]);
         }
         // Все остальные команды
@@ -180,92 +174,11 @@ class TelegramBot
             return true;
         }
 
-        // Если пользователь пытается авторизироваться по телефону
-        if ($contact = $this->message->getContact()) {
-            $phone = $contact->getPhoneNumber();
-
-            $this->saveChatPhone($phone);
-
-            $user = User::wherePhone($phone)->with('telegram_chat')->first();
-
-            // Пользователь не найден
-            if (!$user) {
-                TelegramAPI::sendMessage([
-                    'chat_id' => $this->chat->id,
-                    'text' => "Пользователь с таким номером телефона ещё не зарегистрирован в системе. Попробуйте авторизироваться позже.",
-                    'parse_mode' => 'Markdown',
-                    'reply_markup' => TelegramAPI::replyKeyboardMarkup([
-                        'keyboard' => [
-                            [
-                                ['text' => 'Авторизация', 'request_contact' => true],
-                            ]
-                        ],
-                    ])
-                ]);
-
-                return false;
-            }
-
-            // К пользователю уже подвязан телеграм чат
-            if ($user->telegram_chat) {
-                TelegramAPI::sendMessage([
-                    'chat_id' => $this->chat->id,
-                    'text' => "Этот номер телефона уже используется другим пользователем. Обратитесь к менеджеру для решения данного вопроса.",
-                    'parse_mode' => 'Markdown',
-                    'reply_markup' => TelegramAPI::replyKeyboardMarkup([
-                        'keyboard' => [
-                            [
-                                ['text' => 'Авторизация', 'request_contact' => true],
-                            ]
-                        ],
-                    ])
-                ]);
-
-                return false;
-            }
-
-            // Только водитель может автомат подвязать свой Telegram к учётке
-            if ($user->role_id !== 'driver') {
-                TelegramAPI::sendMessage([
-                    'chat_id' => $this->chat->id,
-                    'text' => "Ваш аккаунт требует ручной активации. Обратитесь к менеджеру для решения данного вопроса.",
-                    'parse_mode' => 'Markdown',
-                    'reply_markup' => TelegramAPI::replyKeyboardMarkup([
-                        'keyboard' => [
-                            [
-                                ['text' => 'Авторизация', 'request_contact' => true],
-                            ]
-                        ],
-                    ])
-                ]);
-
-                return false;
-            }
-
-            // Привязываем чат к найденному юзеру
-            $user->update(['telegram_chat_id' => $this->chat->id]);
-
-            TelegramAPI::sendMessage([
-                'chat_id' => $this->chat->id,
-                'text' => "Ваш аккаунт успешно активирован в системе. Используйте меню для перехода в систему.",
-                'parse_mode' => 'Markdown',
-                'reply_markup' => $this->defaultKeyboard()
-            ]);
-
-            return false;
-        }
-
         TelegramAPI::sendMessage([
             'chat_id' => $this->chat->id,
-            'text' => "Ваш аккаунт ещё не активирован. Вы можете авторизироваться с помощью вашего номера телефона.",
+            'text' => "Ваш аккаунт ещё не активирован. \nОбратитесь к администрации для активации.\n\n@serdnaley",
             'parse_mode' => 'Markdown',
-            'reply_markup' => TelegramAPI::replyKeyboardMarkup([
-                'keyboard' => [
-                    [
-                        ['text' => 'Авторизация', 'request_contact' => true],
-                    ]
-                ],
-            ])
+            'reply_markup' => $this->defaultKeyboard()
         ]);
 
         return false;

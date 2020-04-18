@@ -32,10 +32,11 @@
             @keyup.enter="submit()"
         >
 
-            <div v-show="auth_type === 'password'">
+            <template v-if="auth_type === 'password'">
                 <el-form-item
                     label="E-mail"
                     prop="email"
+                    key="email"
                 >
                     <el-input
                         type="email"
@@ -47,6 +48,7 @@
                 <el-form-item
                     label="Пароль"
                     prop="password"
+                    key="password"
                 >
                     <el-input
                         type="password"
@@ -54,18 +56,20 @@
                         v-model="form.password"
                     />
                 </el-form-item>
-            </div>
+            </template>
 
-            <div v-show="auth_type === 'token'">
+            <template v-else>
                 <el-form-item
                     label="Токен"
                     prop="token"
+                    key="token"
                 >
                     <el-input
+                        name="token"
                         v-model="form.token"
                     />
                 </el-form-item>
-            </div>
+            </template>
 
             <el-form-item v-if="error">
                 <el-alert
@@ -83,6 +87,13 @@
                 >
                     Войти
                 </el-button>
+                <el-button
+                    v-if="$auth.check() && $auth.user()"
+                    type="text"
+                    @click="$router.replace({ ...$route, query: null })"
+                >
+                    Продолжить как {{ $auth.user().short_name }}
+                </el-button>
             </el-form-item>
 
         </el-form>
@@ -91,10 +102,10 @@
 </template>
 
 <script>
-    import {validateForm, resetForm, errorHandler} from "../util";
+    import {validateForm, errorHandler, getQueryVariable} from "../util";
 
     export default {
-        name: 'Auth',
+        name: 'Login',
 
         props: {
             view: {
@@ -110,9 +121,27 @@
                     email: '',
                     password: '',
                 },
-                loading: false,
+                loading: true,
                 error: false,
             }
+        },
+
+        created() {
+            this.$nextTick(async () => {
+                let token = getQueryVariable('auth_token');
+                if (token) {
+                    this.form.token = token;
+                    this.auth_type = 'token';
+
+                    await this
+                        .submit()
+                        .catch(() => {
+                            this.$message.error('Автоматическая авторизация не удалась');
+                        });
+
+                }
+                this.loading = false;
+            });
         },
 
         computed: {
@@ -162,24 +191,38 @@
         methods: {
             async submit() {
 
-                if (!validateForm(this.$refs.form)) {
-                    this.$notify({
-                        title: 'Данные введены неверно',
-                        type: 'error',
-                        position: 'bottom-left',
-                    });
-                    return false;
-                }
-
                 this.loading = true;
 
-                let res = await this.$auth
-                    .login({
-                        params: this.form
-                    })
-                    .catch((err) => {
-                        this.error = errorHandler(err);
-                    });
+                let res;
+
+                if (this.auth_type === 'password') {
+
+                    if (!validateForm(this.$refs.form)) {
+                        this.$notify({
+                            title: 'Данные введены неверно',
+                            type: 'error',
+                            position: 'bottom-left',
+                        });
+                        this.loading = false;
+                        return false;
+                    }
+
+                    res = await this.$auth
+                        .login({
+                            params: this.form
+                        })
+                        .catch((err) => {
+                            this.error = errorHandler(err);
+                        });
+                } else {
+                    res = await this.$auth
+                        .impersonate({
+                            url: 'auth/fast_auth?auth_token=' + this.form.token,
+                        })
+                        .catch((err) => {
+                            this.error = errorHandler(err);
+                        });
+                }
 
                 this.loading = false;
 

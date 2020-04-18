@@ -25,6 +25,7 @@ Route::group([
     // Авторизация
     Route::group(['prefix' => 'auth'], function () {
         Route::post('login', 'AuthController@login');
+        Route::post('fast_auth', 'AuthController@fast_auth');
         Route::get('refresh', 'AuthController@refresh');
 
         Route::group(['middleware' => 'auth:api'], function(){

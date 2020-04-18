@@ -16,10 +16,39 @@ class AuthController extends Controller
         $credentials = $request->validated();
 
         if ($token = $this->guard()->attempt($credentials)) {
-            return response()->json(['status' => 'success'], 200)->header('Authorization', $token);
+            return response()->json([
+                'status' => 'success',
+                'user' => \Auth::user()->toArray(),
+            ], 200)
+                ->header('Authorization', $token);
         }
 
         return response()->json(['error' => 'login_error'], 422);
+    }
+
+    public function fast_auth(Request $request)
+    {
+        $token = $request->auth_token;
+
+        if ($token) {
+            $user = User::where(['fast_auth_token' => $token])->first();
+
+            if ($user) {
+                if ($token = $this->guard()->login($user)) {
+                    return response()->json([
+                        'status' => 'success',
+                        'data' => $user->toArray(),
+                    ], 200)
+                        ->header('Authorization', $token);
+                }
+            }
+        }
+
+        return response([
+            'error' => true,
+            'error_type' => 'invalid_token',
+            'message' => 'Invalid auth token.'
+        ], 422);
     }
 
     public function logout()

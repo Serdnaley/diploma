@@ -42,13 +42,19 @@ class ReportController extends Controller
             return response()->json([]);
         }
 
+        $users_clone = [];
+
+        foreach ($users as $user) {
+            $users_clone[] = (object) $user->toArray();
+        }
+
         $from = Carbon::parse($request->from);
         $from10years = $from->clone()->addYears(-10);
         $to = Carbon::parse($request->to);
 
         $all_reports = Report::where('type', $request->type)->with(['attachments'])->latest()->get();
 
-        foreach ($users as &$user) {
+        foreach ($users_clone as &$user) {
             $reports = $all_reports->where('user_id', $user->id);
 
             if ( $reports->isEmpty() ) {
@@ -78,11 +84,13 @@ class ReportController extends Controller
                 }
             }
 
-            $user->reports = $reports->where('date', '>=', $from)
-                ->where('date', '<=', $to)->values();
+            $user->reports = $reports
+                ->where('date', '>=', $from)
+                ->where('date', '<=', $to)
+                ->values();
         }
 
-        return response()->json($users->toArray());
+        return response()->json($users_clone);
     }
 
     /**

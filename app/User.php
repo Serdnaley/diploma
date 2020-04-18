@@ -41,6 +41,16 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereUpdatedAt($value)
  * @mixin \Eloquent
  * @property-read \App\UserCategory $category
+ * @property int|null $user_category_id
+ * @property int|null $telegram_chat_id
+ * @property string $fast_auth_token
+ * @property-read mixed $auth_url
+ * @property-read string $full_name
+ * @property-read string $short_name
+ * @property-read \App\TelegramChat|null $telegram_chat
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereFastAuthToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereTelegramChatId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereUserCategoryId($value)
  */
 class User extends Authenticatable implements JWTSubject
 {
@@ -96,9 +106,11 @@ class User extends Authenticatable implements JWTSubject
     protected $appends = [
         'full_name',
         'short_name',
+        'auth_url',
     ];
 
-    public function category() {
+    public function category()
+    {
         return $this->belongsTo(UserCategory::class);
     }
 
@@ -114,14 +126,84 @@ class User extends Authenticatable implements JWTSubject
      *
      * @return bool
      */
-    public function has_role($roles) {
-        $roles = (array) $roles;
+    public function has_role($roles)
+    {
+        $roles = (array)$roles;
 
-        foreach($roles as $role) {
-            if ( $role == $this->role ) return true;
+        foreach ($roles as $role) {
+            if ($role == $this->role) return true;
         }
 
         return false;
+    }
+
+    /**
+     * User full name
+     *
+     * @return string
+     */
+    public function getFullNameAttribute()
+    {
+        return implode(' ', [
+            $this->last_name,
+            $this->first_name,
+            $this->patronymic
+        ]);
+    }
+
+    /**
+     * User full name
+     *
+     * @return string
+     */
+    public function getShortNameAttribute()
+    {
+
+        $name = $this->last_name;
+        $name .= ' ' . mb_strtoupper(mb_substr($this->first_name, 0, 1)) . '.';
+        $name .= ' ' . mb_strtoupper(mb_substr($this->patronymic, 0, 1)) . '.';
+
+        return $name;
+    }
+
+
+    /**
+     * User auth url
+     *
+     * @return string
+     */
+    public function getAuthUrlAttribute()
+    {
+        $path = '/login';
+        $attributes = [
+            'auth_token' => $this->fast_auth_token
+        ];
+
+        $url = config('app.url');
+
+        if ($path) {
+            $url = trim($url, '/') . '/' . trim($path, '/');
+        }
+
+        if ($attributes) {
+            $url .= '?' . http_build_query($attributes);
+        }
+
+        return $url;
+    }
+
+    /**
+     * User fast auth token
+     *
+     * @return string
+     */
+    public function getFastAuthTokenAttribute($value)
+    {
+        if (!$value) {
+            $this->makeFastAuthToken();
+        }
+
+        return $this->attributes['fast_auth_token'];
     }
 
 
@@ -148,63 +230,6 @@ class User extends Authenticatable implements JWTSubject
         $this->save();
 
         return false;
-    }
-
-
-        public function getAuthUrlAttribute()
-    {
-        $path = '/';
-        $attributes = [
-            'auth_token' => $this->fast_auth_token
-        ];
-
-        $url = config('app.front_url');
-
-        if ( $path ) {
-            $url = trim($url, '/') . '/' . trim($path, '/');
-        }
-
-        if ( $attributes ) {
-            $url .= '?' . http_build_query($attributes);
-        }
-
-        return $url;
-    }
-
-    public function getFastAuthTokenAttribute($value)
-    {
-        if (!$value) {
-            $this->makeFastAuthToken();
-        }
-
-        return $this->attributes['fast_auth_token'];
-    }
-
-    /**
-     * User full name
-     *
-     * @return string
-     */
-    public function getFullNameAttribute() {
-        return implode(' ', [
-            $this->last_name,
-            $this->first_name,
-            $this->patronymic
-        ]);
-    }
-
-    /**
-     * User full name
-     *
-     * @return string
-     */
-    public function getShortNameAttribute() {
-
-        $name = $this->last_name;
-        $name .= ' ' . mb_strtoupper(mb_substr($this->first_name, 0, 1)) . '.';
-        $name .= ' ' . mb_strtoupper(mb_substr($this->patronymic, 0, 1)) . '.';
-
-        return $name;
     }
 
     /**
