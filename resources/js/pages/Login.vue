@@ -209,19 +209,26 @@
 
                     res = await this.$auth
                         .login({
-                            params: this.form
+                            params: this.form,
                         })
                         .catch((err) => {
                             this.error = errorHandler(err);
                         });
                 } else {
-                    res = await this.$auth
-                        .impersonate({
-                            url: 'auth/fast_auth?auth_token=' + this.form.token,
+
+                    res = await axios
+                        .post('auth/fast_auth', {
+                            auth_token: this.form.token
                         })
                         .catch((err) => {
                             this.error = errorHandler(err);
                         });
+
+                    if (res.data.data) {
+                        await this.$auth.fetch(res.data.data);
+                        await this.$auth.fetch();
+                        await this.$router.push({name: 'Home'});
+                    }
                 }
 
                 this.loading = false;

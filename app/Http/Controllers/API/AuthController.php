@@ -18,7 +18,7 @@ class AuthController extends Controller
         if ($token = $this->guard()->attempt($credentials)) {
             return response()->json([
                 'status' => 'success',
-                'user' => \Auth::user()->toArray(),
+                'data' => \Auth::user()->toArray(),
             ], 200)
                 ->header('Authorization', $token);
         }
