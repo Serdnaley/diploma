@@ -5,34 +5,63 @@
     >
         <el-aside class="aside">
             <div class="aside__profile">
-                <i class="aside__profile-icon el-icon-user"/>
-                <div>
-                    {{ $auth.user().last_name }}
-                    {{ $auth.user().first_name }}
-                    <br>
-                    {{ $auth.user().patronymic }}
+                <div class="aside__profile-user">
+                    <i class="aside__profile-icon el-icon-user"/>
+                    <div>
+                        {{ $auth.user().last_name }}
+                        {{ $auth.user().first_name }}
+                        <br>
+                        {{ $auth.user().patronymic }}
+                    </div>
                 </div>
-                <el-button
-                    type="text"
-                    class="aside__profile-exit"
-                    @click="exit()"
-                >
-                    выйти
-                </el-button>
+                <div class="aside__profile-actions">
+                    <el-button
+                        type="text"
+                        class="aside__profile-exit"
+                        @click="exit()"
+                    >
+                        выйти
+                    </el-button>
+                    <el-button
+                        type="link"
+                        size="mini"
+                        plain
+                        class="aside__profile-menu-toggle"
+                        @click="view_mobile_menu = !view_mobile_menu"
+                    >
+                        меню
+                    </el-button>
+                </div>
             </div>
-            <el-divider/>
-            <el-tabs
-                tab-position="left"
-                class="aside__menu"
-                :value="active_index"
-                @tab-click="handleChange"
-            >
-                <el-tab-pane
-                    v-for="(item, index) in menu"
-                    :key="index"
-                    :label="item.name"
-                />
-            </el-tabs>
+            <el-collapse-transition>
+                <div v-show="view_mobile_menu">
+                    <el-divider/>
+                    <el-tabs
+                        tab-position="left"
+                        class="aside__menu"
+                        :value="active_index"
+                        @tab-click="handleChange"
+                    >
+                        <el-tab-pane
+                            v-for="(item, index) in menu"
+                            :key="index"
+                            :label="item.name"
+                        />
+                    </el-tabs>
+                    <div class="aside__footer">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" enable-background="new 0 0 64 64">
+                            <path d="m61.07 18.16c-6.395-16.918-27.15-9.328-29.07-.879-2.64-9-22.89-15.721-29.07.891-6.881 18.502 26.67 35.11 29.07 37.828 2.397-2.162 35.952-19.639 29.07-37.84"/>
+                        </svg>
+                        <div class="text">
+                            Дипломный проект
+                            <br>
+                            Студента 452 группы
+                            <br>
+                            Павлюка Андреса
+                        </div>
+                    </div>
+                </div>
+            </el-collapse-transition>
         </el-aside>
 
         <el-main class="main">
@@ -45,6 +74,12 @@
 <script>
     export default {
         name: "Layout",
+
+        data() {
+            return {
+                view_mobile_menu: innerWidth > 980,
+            }
+        },
 
         computed: {
             menu() {
@@ -59,7 +94,7 @@
 
                 if (this.$auth.check(['admin', 'manager'])) {
                     menu.push({
-                        name: 'Отчеты',
+                        name: 'Все отчеты',
                         route: 'Reports',
                     });
 
@@ -91,6 +126,7 @@
 
         methods: {
             handleChange(tab) {
+                this.view_mobile_menu = innerWidth > 980;
                 let item = this.menu[tab.index];
                 if (item && item.route !== this.$route.name)
                     this.$router.push({name: item.route});
@@ -121,6 +157,7 @@
             position: fixed;
             height: 100%;
             box-shadow: $--box-shadow-dark;
+            padding-bottom: 100px;
 
             &__profile {
                 position: relative;
@@ -130,18 +167,30 @@
                 padding: 50px 30px 30px 30px;
                 color: $--color-primary;
 
+                &-user {
+                    display: flex;
+                    align-items: center;
+                }
+
                 &-icon {
                     font-size: 50px;
                     margin-right: 15px;
                     margin-bottom: 5px;
                 }
 
-                &-exit {
+                &-actions {
                     display: inline-block;
                     position: absolute;
                     top: 0;
                     right: 10px;
+                }
+
+                &-exit {
                     color: $--color-text-placeholder;
+                }
+
+                &-menu-toggle {
+                    display: none;
                 }
             }
 
@@ -175,6 +224,57 @@
                     }
                 }
             }
+
+            &__footer {
+                position: fixed;
+                bottom: 0;
+                height: 100px;
+                width: 300px;
+                z-index: 2;
+
+                display: flex;
+                align-items: center;
+
+                padding: 0 30px;
+                box-sizing: border-box;
+
+                background: $--color-white;
+
+                cursor: default;
+                user-select: none;
+
+                $transition: 3s;
+
+                .text {
+                    margin-left: -30px;
+                    transition: $transition;
+                }
+
+                svg {
+                    display: inline-block;
+                    height: 30px;
+                    width: 30px;
+                    vertical-align: top;
+                    animation: heart-pulse 3s infinite ease-in-out;
+
+                    path {
+                        fill: transparent;
+                        transition: $transition;
+                    }
+                }
+
+                &:hover {
+                    .text {
+                        margin-left: 15px;
+                    }
+
+                    svg {
+                        path {
+                            fill: #f46767;
+                        }
+                    }
+                }
+            }
         }
 
         .main {
@@ -185,6 +285,47 @@
             h1 {
                 color: $--color-text-primary;
             }
+        }
+
+        @media (max-width: 980px) {
+            flex-direction: column;
+
+            .aside {
+                position: relative;
+                padding: 0;
+                width: 100% !important;
+                height: auto;
+
+                &__profile {
+                    padding: 10px 20px 10px 20px;
+                    justify-content: space-between;
+
+                    &-actions {
+                        position: relative;
+                    }
+
+                    &-menu-toggle {
+                        display: inline-block;
+                    }
+                }
+
+                &__footer {
+                    display: none;
+                }
+            }
+
+            .main {
+                padding-left: 30px;
+            }
+        }
+    }
+
+    @keyframes heart-pulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(3);
         }
     }
 </style>
