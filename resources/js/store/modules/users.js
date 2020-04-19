@@ -6,11 +6,13 @@ export default {
     state: {
         users: [],
         user: null,
+        user_reports: [],
     },
 
     getters: {
         users: (state) => state.users,
         user: (state) => state.user,
+        user_reports: (state) => state.user_reports,
     },
 
     mutations: {
@@ -20,6 +22,7 @@ export default {
             state.users.push(data);
         },
         get_user: (state, data) => state.user = data,
+        get_user_reports: (state, data) => state.user_reports = data,
         update_user: (state, data) => {
             if (state.user && state.user.id === data.id) state.user = data;
             let index = _.findIndex(state.users, {id: data.id});
@@ -54,6 +57,14 @@ export default {
             let res = await axios.get(`user/${data.id}`);
 
             commit('get_user', res.data.data);
+
+            return res;
+        },
+
+        async getUserReports({commit}, data = {}) {
+            let res = await axios.get(`user/${data.id}/reports`);
+
+            commit('get_user_reports', res.data.data);
 
             return res;
         },

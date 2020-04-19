@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UpdateUserRequest;
 use App\Http\Resources\UserResource;
+use App\Report;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -68,6 +69,33 @@ class UserController extends Controller
         }
 
         return new UserResource($user);
+    }
+
+    /**
+     * Display the reports of user.
+     *
+     * @param $id
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function reports($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()
+                ->json([
+                    'error' => 'error',
+                    'message' => 'Объект не найден. Возможно он был удалён.'
+                ], 404);
+        }
+
+        $reports = Report::whereUserId($user->id)->get();
+
+        return response()
+            ->json([
+                'data' => $reports,
+            ], 200);
     }
 
     /**

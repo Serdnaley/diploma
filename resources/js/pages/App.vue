@@ -46,33 +46,47 @@
     export default {
         name: "Layout",
 
-        data() {
-            return {
-                menu: [
-                    {
-                        name: 'Цикловые комиссии',
-                        route: 'Categories',
-                    },
-                    {
-                        name: 'Пользователи',
-                        route: 'Users',
-                    },
-                    {
+        computed: {
+            menu() {
+                const menu = [];
+
+                if (this.$auth.check(['admin', 'manager', 'user'])) {
+                    menu.push({
+                        name: 'Личный кабинет',
+                        route: 'Account',
+                    });
+                }
+
+                if (this.$auth.check(['admin', 'manager'])) {
+                    menu.push({
                         name: 'Отчеты',
                         route: 'Reports',
-                    },
-                    {
+                    });
+
+                    menu.push({
+                        name: 'Пользователи',
+                        route: 'Users',
+                    });
+
+                    menu.push({
+                        name: 'Цикловые комиссии',
+                        route: 'Categories',
+                    });
+                }
+
+                if (this.$auth.check(['admin'])) {
+                    menu.push({
                         name: 'Настройки',
                         route: 'Settings',
-                    },
-                ],
-            }
-        },
+                    });
+                }
 
-        computed: {
+                return menu;
+            },
+
             active_index() {
                 return _.findIndex(this.menu, {route: this.$route.name}).toString();
-            }
+            },
         },
 
         methods: {
@@ -169,7 +183,6 @@
             min-height: 100vh;
 
             h1 {
-                text-transform: uppercase;
                 color: $--color-text-primary;
             }
         }

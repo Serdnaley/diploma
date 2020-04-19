@@ -34,14 +34,17 @@ Route::group([
         });
     });
 
-    Route::apiResource('user', 'UserController');
-    Route::apiResource('category', 'UserCategoryController');
-    Route::apiResource('report', 'ReportController');
-    Route::apiResource('telegram_chat', 'Telegram\TelegramChatController');
+    Route::group(['middleware' => 'auth:api'], function(){
+        Route::apiResource('user', 'UserController');
+        Route::apiResource('category', 'UserCategoryController');
+        Route::apiResource('report', 'ReportController');
+        Route::apiResource('telegram_chat', 'Telegram\TelegramChatController');
 
+        Route::get('user/{user}/reports', 'UserController@reports');
 
-    // Редактируем профиль
-    Route::group(['prefix' => 'file'], function (){
-        Route::post('store', 'UserFileController@store');
+        Route::group(['prefix' => 'file'], function (){
+            Route::post('store', 'UserFileController@store');
+        });
     });
+
 });

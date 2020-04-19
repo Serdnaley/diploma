@@ -317,45 +317,6 @@ body {
     cursor: pointer;
 }
 
-.stylized-tabs {
-
-    .el-tabs {
-        &__header {
-            margin: 0;
-            text-transform: uppercase;
-        }
-
-        &__nav-wrap {
-            margin: 0;
-
-            &::after {
-                display: none;
-            }
-        }
-
-        &__item {
-            position: relative;
-            padding: 5px 30px 5px 0;
-            height: auto;
-            line-height: 2em;
-
-            &::after {
-                content: '';
-                display: block;
-            }
-        }
-
-        &__active-bar {
-            transition: width 0.3s cubic-bezier(0.645, 0.045, 0.355, 1),
-            transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
-        }
-    }
-
-    .el-tab-pane {
-        margin-top: 15px;
-    }
-}
-
 .el-notification {
     &__group {
         display: flex;

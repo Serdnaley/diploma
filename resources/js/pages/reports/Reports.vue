@@ -277,7 +277,7 @@
                         category: this.filter_data.category,
                     })
                     .catch((err) => {
-                        this.$message.error(errorHandler(err).message || 'Не удалось загрузить комиссии')
+                        this.$message.error(errorHandler(err).message || 'Не удалось загрузить отчет')
                     });
 
                 this.loading = false;

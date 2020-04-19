@@ -38,6 +38,7 @@
             >
                 <remote-select
                     v-model="report_clone.user_id"
+                    :disabled="!$auth.check(['admin', 'manager'])"
                     name="report_category_id"
                     :method="getUsers"
                     style="width: 100%;"
@@ -57,6 +58,7 @@
             >
                 <el-date-picker
                     v-model="report_clone.date"
+                    :disabled="!$auth.check(['admin', 'manager'])"
                     format="dd.MM.yyyy"
                     value-format="yyyy-MM-dd"
                     name="date"
@@ -142,7 +144,7 @@
                 report_clone: {},
 
                 report_default: {
-                    user_id: null,
+                    user_id: this.$auth.user().id,
                     type: 'fluorography',
                     date: moment().format('YYYY-MM-DD'),
                     attachment_ids: [],

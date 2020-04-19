@@ -119,6 +119,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsTo(TelegramChat::class);
     }
 
+    public function reports()
+    {
+        return $this->hasMany(Report::class);
+    }
+
     /**
      * Проверяет есть ли у пользователя роль из переданных
      *

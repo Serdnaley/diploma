@@ -10,8 +10,7 @@ const router = new VueRouter({
         {
             path: '/',
             name: 'Home',
-            meta: {auth: 'admin'},
-            redirect: '/reports',
+            redirect: '/account',
         },
         {
             path: '/login',
@@ -20,27 +19,56 @@ const router = new VueRouter({
             component: require('../pages/Login').default,
         },
         {
-            path: '/categories',
-            name: 'Categories',
-            meta: {auth: 'admin'},
-            component: require('../pages/categories/Categories').default,
+            path: '/account',
+            name: 'Account',
+            meta: {auth: true},
+            component: require('../pages/account/Account').default,
             children: [
                 {
                     path: 'add',
-                    name: 'AddCategory',
-                    component: require('../pages/categories/AddEditCategory').default,
+                    name: 'AccountAddReport',
+                    component: require('../pages/reports/AddEditReport').default,
                 },
                 {
-                    path: 'edit/:category_id',
-                    name: 'EditCategory',
-                    component: require('../pages/categories/AddEditCategory').default,
+                    path: 'edit/:report_id',
+                    name: 'AccountEditReport',
+                    component: require('../pages/reports/AddEditReport').default,
+                },
+            ],
+        },
+        {
+            path: '/reports',
+            name: 'Reports',
+            meta: {auth: true},
+            component: require('../pages/reports/Reports').default,
+            beforeEnter(to, from, next) {
+                if (Vue.auth.check(['admin', 'manager'])) {
+                    next();
+                } else {
+                    next({
+                        name: 'Account' + to.name,
+                        params: to.params,
+                        query: to.query,
+                    });
+                }
+            },
+            children: [
+                {
+                    path: 'add',
+                    name: 'AddReport',
+                    component: require('../pages/reports/AddEditReport').default,
+                },
+                {
+                    path: 'edit/:report_id',
+                    name: 'EditReport',
+                    component: require('../pages/reports/AddEditReport').default,
                 },
             ],
         },
         {
             path: '/users',
             name: 'Users',
-            meta: {auth: 'admin'},
+            meta: {auth: ['admin', 'manager']},
             component: require('../pages/users/Users').default,
             children: [
                 {
@@ -56,27 +84,27 @@ const router = new VueRouter({
             ],
         },
         {
-            path: '/reports',
-            name: 'Reports',
-            meta: {auth: 'admin'},
-            component: require('../pages/reports/Reports').default,
+            path: '/categories',
+            name: 'Categories',
+            meta: {auth: ['admin', 'manager']},
+            component: require('../pages/categories/Categories').default,
             children: [
                 {
                     path: 'add',
-                    name: 'AddReport',
-                    component: require('../pages/reports/AddEditReport').default,
+                    name: 'AddCategory',
+                    component: require('../pages/categories/AddEditCategory').default,
                 },
                 {
-                    path: 'edit/:report_id',
-                    name: 'EditReport',
-                    component: require('../pages/reports/AddEditReport').default,
+                    path: 'edit/:category_id',
+                    name: 'EditCategory',
+                    component: require('../pages/categories/AddEditCategory').default,
                 },
             ],
         },
         {
             path: '/register',
             name: 'Settings',
-            meta: {auth: 'admin'},
+            meta: {auth: ['admin', 'manager']},
             component: require('../pages/settings/Settings').default,
         },
         {
