@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Resources\UserResource;
 use App\User;
 use Illuminate\Http\Request;
+use JWTAuth;
 
 class AuthController extends Controller
 {
@@ -15,15 +16,19 @@ class AuthController extends Controller
     {
         $credentials = $request->validated();
 
-        if ($token = $this->guard()->attempt($credentials)) {
-            return response()->json([
-                'status' => 'success',
-                'data' => \Auth::user()->toArray(),
-            ], 200)
+        if ($token = JWTAuth::attempt($credentials)) {
+            return response()
+                ->json([
+                    'status' => 'success',
+                    'data' => \Auth::user()->toArray(),
+                ], 200)
                 ->header('Authorization', $token);
         }
 
-        return response()->json(['error' => 'login_error'], 422);
+        return response()
+            ->json([
+                'error' => 'login_error'
+            ], 422);
     }
 
     public function fast_auth(Request $request)
@@ -34,11 +39,12 @@ class AuthController extends Controller
             $user = User::where(['fast_auth_token' => $token])->first();
 
             if ($user) {
-                if ($token = $this->guard()->login($user)) {
-                    return response()->json([
-                        'status' => 'success',
-                        'data' => $user->toArray(),
-                    ], 200)
+                if ($token = JWTAuth::fromUser($user)) {
+                    return response()
+                        ->json([
+                            'status' => 'success',
+                            'data' => $user->toArray(),
+                        ], 200)
                         ->header('Authorization', $token);
                 }
             }
@@ -55,10 +61,11 @@ class AuthController extends Controller
     {
         $this->guard()->logout();
 
-        return response()->json([
-            'status' => 'success',
-            'msg' => 'Logged out Successfully.'
-        ], 200);
+        return response()
+            ->json([
+                'status' => 'success',
+                'msg' => 'Logged out Successfully.'
+            ], 200);
     }
 
     public function user(Request $request)
@@ -75,7 +82,10 @@ class AuthController extends Controller
                 ->json(['status' => 'success'], 200)
                 ->header('Authorization', $token);
         }
-        return response()->json(['error' => 'refresh_token_error'], 401);
+        return response()
+            ->json([
+                'error' => 'refresh_token_error'
+            ], 401);
     }
 
     private function guard()

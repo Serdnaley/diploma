@@ -225,8 +225,9 @@
                         });
 
                     if (res.data.data) {
-                        await this.$auth.fetch(res.data.data);
-                        await this.$auth.fetch();
+                        this.$auth.watch.data = res.data.data;
+                        this.$auth.watch.authenticated = true;
+                        this.$auth.watch.loaded = true;
                         await this.$router.push({name: 'Home'});
                     }
                 }
