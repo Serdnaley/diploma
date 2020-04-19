@@ -18,9 +18,11 @@ use Illuminate\Support\Facades\Route;
 Route::group([
     'namespace' => 'API',
 ], function () {
-//dd(TelegramAPI::getAccessToken());
+
     Route::any('telegram/' . TelegramAPI::getAccessToken() . '/webhook', 'Telegram\TelegramController@webhook')->name('telegram.webhook');
     Route::any('telegram/' . TelegramAPI::getAccessToken() . '/setWebhook', 'Telegram\TelegramController@setWebhook')->name('telegram.setWebhook');
+
+    Route::any('notification/send', 'NotificationController@send')->name('notification.send');
 
     // Авторизация
     Route::group(['prefix' => 'auth'], function () {

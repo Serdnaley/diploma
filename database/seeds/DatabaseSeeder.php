@@ -38,7 +38,7 @@ class DatabaseSeeder extends Seeder
         $users = factory(\App\User::class, 20)->create();
         $categories = factory(\App\UserCategory::class, 10)->create();
 
-        $users->push($admin);
+//        $users->push($admin);
         $users->push($manager);
         $users->push($user);
 
