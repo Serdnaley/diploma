@@ -49,9 +49,13 @@
                         />
                     </el-tabs>
                     <div class="aside__footer">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" enable-background="new 0 0 64 64">
-                            <path d="m61.07 18.16c-6.395-16.918-27.15-9.328-29.07-.879-2.64-9-22.89-15.721-29.07.891-6.881 18.502 26.67 35.11 29.07 37.828 2.397-2.162 35.952-19.639 29.07-37.84"/>
-                        </svg>
+                        <div class="heart">
+                            <template v-for="i in 5">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" enable-background="new 0 0 64 64">
+                                    <path d="m61.07 18.16c-6.395-16.918-27.15-9.328-29.07-.879-2.64-9-22.89-15.721-29.07.891-6.881 18.502 26.67 35.11 29.07 37.828 2.397-2.162 35.952-19.639 29.07-37.84"/>
+                                </svg>
+                            </template>
+                        </div>
                         <div class="text">
                             Дипломный проект
                             <br>
@@ -250,16 +254,30 @@
                     transition: $transition;
                 }
 
-                svg {
+                .heart {
+                    position: relative;
                     display: inline-block;
                     height: 30px;
                     width: 30px;
                     vertical-align: top;
-                    animation: heart-pulse 3s infinite ease-in-out;
+                    transform: scale(2);
 
-                    path {
-                        fill: transparent;
-                        transition: $transition;
+                    svg {
+                        position: absolute;
+                        height: 100%;
+                        width: 100%;
+                        animation: heart-pulse 10s infinite ease-in-out;
+
+                        @for $n from 1 to 5 {
+                            &:nth-child(#{$n}) {
+                                animation-delay: #{$n*2}s;
+                            }
+                        }
+
+                        path {
+                            fill: transparent;
+                            transition: $transition;
+                        }
                     }
                 }
 
@@ -268,9 +286,11 @@
                         margin-left: 15px;
                     }
 
-                    svg {
-                        path {
-                            fill: #f46767;
+                    .heart {
+                        svg {
+                            path {
+                                fill: #f46767;
+                            }
                         }
                     }
                 }
@@ -321,11 +341,17 @@
     }
 
     @keyframes heart-pulse {
-        0%, 100% {
-            transform: scale(1);
+        0% {
+            transform: scale(0);
+            opacity: 0.8;
         }
-        50% {
-            transform: scale(3);
+        80% {
+            transform: scale(1.2);
+            opacity: 0;
+        }
+        100% {
+            transform: scale(2.2);
+            opacity: 0;
         }
     }
 </style>
