@@ -102,7 +102,7 @@
 </template>
 
 <script>
-    import {validateForm, errorHandler, getQueryVariable} from "../util";
+    import {validateForm, errorHandler, getQueryVariable, setCookie} from "../util";
 
     export default {
         name: 'Login',
@@ -225,9 +225,13 @@
                         });
 
                     if (res.data.data) {
+
                         this.$auth.watch.data = res.data.data;
                         this.$auth.watch.authenticated = true;
                         this.$auth.watch.loaded = true;
+
+                        setCookie('rememberMe', 'true', 12096e5);
+
                         await this.$router.push({name: 'Home'});
                     }
                 }

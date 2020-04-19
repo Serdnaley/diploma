@@ -61,3 +61,20 @@ export function getQueryVariable(variable) {
 
     return undefined;
 }
+
+
+export function setCookie (name, value, timeOffset = 0) {
+    let domain = window.location.hostname,
+        expires = (new Date((new Date()).getTime() + timeOffset)).toUTCString(),
+        cookie = name + '=' + value + '; Expires=' + expires + ';';
+
+    if (domain !== 'localhost') {
+        cookie += ' Path=/; Domain=' + domain + ';';
+    }
+
+    if (location.protocol === 'https:') {
+        cookie += 'secure';
+    }
+
+    document.cookie = cookie;
+}

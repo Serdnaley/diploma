@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter from "vue-router";
 import VueRouterBackButton from 'vue-router-back-button';
+import {getQueryVariable} from "../util";
 
 Vue.use(VueRouter);
 
@@ -15,8 +16,13 @@ const router = new VueRouter({
         {
             path: '/login',
             name: 'Login',
-            meta: {auth: false},
             component: require('../pages/Login').default,
+            beforeEnter(to, from, next) {
+                if (Vue.auth.check() && !getQueryVariable('auth_token'))
+                    next('/');
+                else
+                    next();
+            },
         },
         {
             path: '/account',
@@ -25,12 +31,12 @@ const router = new VueRouter({
             component: require('../pages/account/Account').default,
             children: [
                 {
-                    path: 'add',
+                    path: 'report/add',
                     name: 'AccountAddReport',
                     component: require('../pages/reports/AddEditReport').default,
                 },
                 {
-                    path: 'edit/:report_id',
+                    path: 'report/edit/:report_id',
                     name: 'AccountEditReport',
                     component: require('../pages/reports/AddEditReport').default,
                 },
