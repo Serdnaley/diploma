@@ -1,0 +1,32 @@
+@media print {
+
+    .screen-only {
+        display: none !important;
+    }
+
+    .layout {
+        .aside {
+            display: none;
+        }
+
+        .main {
+            padding: 0;
+        }
+    }
+
+    .entities-list {
+
+        &__group {
+            &-item {
+                .el-card {
+                    border: none;
+
+                    &__body {
+                        padding: 0;
+                    }
+                }
+            }
+        }
+    }
+
+}

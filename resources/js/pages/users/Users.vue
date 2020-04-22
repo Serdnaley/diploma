@@ -12,6 +12,7 @@
             <h1>Пользователи</h1>
             <el-button
                 type="primary"
+                class="screen-only"
                 @click="add()"
             >
                 Добавить пользователя

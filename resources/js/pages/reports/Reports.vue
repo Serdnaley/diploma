@@ -14,6 +14,7 @@
             <h1>Отчеты</h1>
             <el-button
                 type="primary"
+                class="screen-only"
                 @click="add()"
             >
                 Добавить отчет
@@ -23,6 +24,7 @@
         <el-row
             type="flex"
             align="middle"
+            class="screen-only"
         >
             <el-tabs
                 v-model="filter_data.type"
@@ -96,7 +98,10 @@
                     <el-col :span="2">
                         Фото
                     </el-col>
-                    <el-col :span="4">
+                    <el-col
+                        :span="4"
+                        class="screen-only"
+                    >
                         Действия
                     </el-col>
                 </el-row>
@@ -160,7 +165,11 @@
                                             {{ report.attachments.length }}
                                         </template>
                                     </el-col>
-                                    <el-col :span="4" v-if="report.id">
+                                    <el-col
+                                        v-if="report.id"
+                                        :span="4"
+                                        class="screen-only"
+                                    >
                                         <span
                                             class="color-primary clickable"
                                             style="margin-right: 10px;"
