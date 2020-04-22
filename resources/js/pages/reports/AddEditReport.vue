@@ -151,75 +151,7 @@
                     attachments: [],
                 },
 
-                rules: {
-                    first_name: [
-                        {
-                            required: true,
-                            message: 'Введите имя пользователя',
-                            trigger: 'blur',
-                        },
-                        {
-                            min: 2,
-                            message: 'Слишком короткое имя',
-                            trigger: 'blur',
-                        },
-                    ],
-                    last_name: [
-                        {
-                            required: true,
-                            message: 'Введите фамилию пользователя',
-                            trigger: 'blur',
-                        },
-                        {
-                            min: 2,
-                            message: 'Слишком короткая фамилия',
-                            trigger: 'blur',
-                        },
-                    ],
-                    patronymic: [
-                        {
-                            required: true,
-                            message: 'Введите отчество пользователя',
-                            trigger: 'blur',
-                        },
-                        {
-                            min: 2,
-                            message: 'Слишком короткое отчество',
-                            trigger: 'blur',
-                        },
-                    ],
-                    role: [
-                        {
-                            required: true,
-                            message: 'Выберите роль пользователя',
-                            trigger: 'blur',
-                        },
-                    ],
-                    email: [
-                        {
-                            required: true,
-                            message: 'Введите email пользователя',
-                            trigger: 'blur',
-                        },
-                        {
-                            type: 'email',
-                            message: 'Неверно введен email',
-                            trigger: 'blur',
-                        },
-                    ],
-                    phone: [
-                        {
-                            required: true,
-                            message: 'Введите номер телефона пользователя',
-                            trigger: 'blur',
-                        },
-                        {
-                            min: 10,
-                            message: 'Неверно введен номер телефона',
-                            trigger: 'blur',
-                        },
-                    ],
-                },
+                rules: {},
 
                 clicked: false,
                 accept: 'image/jpeg,image/jpg,image/png',

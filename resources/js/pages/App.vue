@@ -243,6 +243,7 @@
                 box-sizing: border-box;
 
                 background: $--color-white;
+                color: $--color-text-placeholder;
 
                 cursor: default;
                 user-select: none;
@@ -282,6 +283,8 @@
                 }
 
                 &:hover {
+                    color: $--color-text-regular;
+
                     .text {
                         margin-left: 15px;
                     }

@@ -1,7 +1,7 @@
 <template>
     <route-modal
         :back-to-default="{name: 'Users'}"
-        :title="(user_id ? 'Редактировать' : 'Добавить') + ' комиссию'"
+        :title="(user_id ? 'Редактировать' : 'Добавить') + ' пользователя'"
         width="30%"
         @close="handleClose()"
         ref="modal"
