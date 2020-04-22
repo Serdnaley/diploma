@@ -8,13 +8,15 @@ use App\Http\Resources\UserResource;
 use App\Report;
 use App\User;
 use Illuminate\Http\Request;
+use TelegramAPI;
+use TelegramBot;
 
 class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index()
     {
@@ -28,7 +30,7 @@ class UserController extends Controller
      *
      * @param UpdateUserRequest $request
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return UserResource
      */
     public function store(UpdateUserRequest $request)
     {
@@ -47,6 +49,15 @@ class UserController extends Controller
         $user->password = bcrypt($password);
         $user->save();
 
+        if ($user->telegram_chat_id) {
+            TelegramAPI::sendMessage([
+                'chat_id' => $user->telegram_chat_id,
+                'text' => "{$user->first_name}, ваш аккаунт был активирован.",
+                'parse_mode' => 'Markdown',
+                'reply_markup' => TelegramBot::defaultKeyboard(),
+            ]);
+        }
+
         return new UserResource($user);
     }
 
@@ -55,7 +66,7 @@ class UserController extends Controller
      *
      * @param $id
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return UserResource
      */
     public function show($id)
     {
@@ -104,7 +115,7 @@ class UserController extends Controller
      * @param UpdateUserRequest $request
      * @param                   $id
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return UserResource
      */
     public function update(UpdateUserRequest $request, $id)
     {
@@ -126,6 +137,15 @@ class UserController extends Controller
             'role',
             'email',
         ]));
+
+        if ($user->wasChanged('telegram_chat_id') && $user->telegram_chat_id) {
+            TelegramAPI::sendMessage([
+                'chat_id' => $user->telegram_chat_id,
+                'text' => "{$user->first_name}, ваш аккаунт был активирован.",
+                'parse_mode' => 'Markdown',
+                'reply_markup' => TelegramBot::defaultKeyboard(),
+            ]);
+        }
 
         if ($request->password) {
             $user->password = bcrypt($request->password);

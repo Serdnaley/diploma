@@ -25,17 +25,11 @@
 
             <el-card shadow="never" class="entities-list__head">
                 <el-row>
-                    <el-col :span="10">
+                    <el-col :span="16">
                         ФИО
                     </el-col>
-                    <el-col :span="4">
-                        Роль
-                    </el-col>
                     <el-col :span="3">
-                        Статус
-                    </el-col>
-                    <el-col :span="2">
-                        Кол.фото
+                        Роль
                     </el-col>
                     <el-col :span="4">
                         Действия
@@ -54,19 +48,17 @@
                 >
                     <el-card shadow="never">
                         <el-row>
-                            <el-col :span="10">
+                            <el-col :span="16">
                                 {{ user.full_name }}
-                            </el-col>
-                            <el-col :span="4">
-                                {{ user.created_at | formatDate }}
+                                <span
+                                    v-if="!user.telegram_chat_id"
+                                    class="color-danger"
+                                >
+                                    &bull; не привязан к Telegram
+                                </span>
                             </el-col>
                             <el-col :span="3">
-                                <div>
-                                    {{ user.is_done ? 'Выполнено' : 'Не выполнено' }}
-                                </div>
-                            </el-col>
-                            <el-col :span="2">
-                                {{ user.length | formatNumber }}
+                                {{ user.role }}
                             </el-col>
                             <el-col :span="4">
                                 <span
