@@ -52,7 +52,7 @@ class UserController extends Controller
         if ($user->telegram_chat_id) {
             TelegramAPI::sendMessage([
                 'chat_id' => $user->telegram_chat_id,
-                'text' => "{$user->first_name}, ваш аккаунт был активирован.",
+                'text' => "{$user->first_name}, ваш аккаунт був активований.",
                 'parse_mode' => 'Markdown',
                 'reply_markup' => TelegramBot::defaultKeyboard(),
             ]);
@@ -75,7 +75,7 @@ class UserController extends Controller
         if (!$user) {
             return response()->json([
                 'error' => 'error',
-                'message' => 'Объект не найден. Возможно он был удалён.'
+                'message' => 'Об\'єкт не знайдено. Можливо він був видалений.'
             ], 404);
         }
 
@@ -97,7 +97,7 @@ class UserController extends Controller
             return response()
                 ->json([
                     'error' => 'error',
-                    'message' => 'Объект не найден. Возможно он был удалён.'
+                    'message' => 'Об\'єкт не знайдено. Можливо він був видалений.'
                 ], 404);
         }
 
@@ -124,7 +124,7 @@ class UserController extends Controller
         if (!$user) {
             return response()->json([
                 'error' => 'error',
-                'message' => 'Объект не найден. Возможно он был удалён.'
+                'message' => 'Об\'єкт не знайдено. Можливо він був видалений.'
             ], 404);
         }
 

@@ -9,13 +9,13 @@
             align="middle"
             class="title"
         >
-            <h1>Пользователи</h1>
+            <h1>Користувачі</h1>
             <el-button
                 type="primary"
                 class="screen-only"
                 @click="add()"
             >
-                Добавить пользователя
+                Створити користувача
             </el-button>
         </el-row>
 
@@ -27,13 +27,13 @@
             <el-card shadow="never" class="entities-list__head">
                 <el-row>
                     <el-col :span="16">
-                        ФИО
+                        ПІБ
                     </el-col>
                     <el-col :span="3">
                         Роль
                     </el-col>
                     <el-col :span="4">
-                        Действия
+                        Дії
                     </el-col>
                 </el-row>
             </el-card>
@@ -55,7 +55,7 @@
                                     v-if="!user.telegram_chat_id"
                                     class="color-danger"
                                 >
-                                    &bull; не привязан к Telegram
+                                    &bull; не прив'язаний до Telegram
                                 </span>
                             </el-col>
                             <el-col :span="3">
@@ -67,14 +67,14 @@
                                     style="margin-right: 10px;"
                                     @click="edit(user)"
                                 >
-                                    Изменить
+                                    Змінити
                                 </span>
                                 <span
                                     class="color-danger clickable"
                                     style="margin-right: 10px;"
                                     @click="doDelete(user)"
                                 >
-                                    Удалить
+                                    Видалити
                                 </span>
                             </el-col>
                         </el-row>
@@ -86,7 +86,7 @@
                 class="entities-list__no-items"
                 v-else
             >
-                Ничего не найдено
+                Нічого не знайдено
             </div>
 
         </div>
@@ -128,7 +128,7 @@
 
                 await this.getUsers()
                     .catch((err) => {
-                        this.$message.error(errorHandler(err).message || 'Не удалось загрузить пользователя')
+                        this.$message.error(errorHandler(err).message || 'Не вдалося завантажити користувача')
                     });
 
                 this.loading = false;
@@ -157,11 +157,11 @@
 
                 let confirm = await this
                     .$confirm(
-                        'Вы действительно хотите удалить "' + item.full_name + '"?',
-                        'Подтвердите действие',
+                        'Ви дійсно хочете видалити "' + item.full_name + '"?',
+                        'Підтвердіть дію',
                         {
-                            confirmButtonText: 'Удалить',
-                            cancelButtonText: 'Отмена',
+                            confirmButtonText: 'Видалити',
+                            cancelButtonText: 'Відміна',
                         }
                     )
                     .catch(_.noop);
@@ -173,7 +173,7 @@
                 await this
                     .deleteUser({id: item.id})
                     .catch(err => {
-                        this.$message.error(errorHandler(err).message || 'Не удалось удалить пользователя');
+                        this.$message.error(errorHandler(err).message || 'Не вдалося видалити користувача');
                     });
 
                 this.loading = false;

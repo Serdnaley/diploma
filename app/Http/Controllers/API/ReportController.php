@@ -140,7 +140,7 @@ class ReportController extends Controller
         if (!$report) {
             return response()->json([
                 'error' => 'error',
-                'message' => 'Объект не найден. Возможно он был удалён.'
+                'message' => 'Об\'єкт не знайдено. Можливо він був видалений.'
             ], 404);
         }
 
@@ -171,7 +171,7 @@ class ReportController extends Controller
         if (!$report) {
             return response()->json([
                 'error' => 'error',
-                'message' => 'Объект не найден. Возможно он был удалён.'
+                'message' => 'Об\'єкт не знайдено. Можливо він був видалений.'
             ], 404);
         }
 
@@ -215,7 +215,7 @@ class ReportController extends Controller
         if (!$report) {
             return response()->json([
                 'error' => 'error',
-                'message' => 'Объект не найден. Возможно он был удалён.'
+                'message' => 'Об\'єкт не знайдено. Можливо він був видалений.'
             ], 404);
         }
 

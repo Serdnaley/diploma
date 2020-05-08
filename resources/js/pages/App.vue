@@ -20,7 +20,7 @@
                         class="aside__profile-exit"
                         @click="exit()"
                     >
-                        выйти
+                        вийти
                     </el-button>
                     <el-button
                         type="link"
@@ -57,9 +57,9 @@
                             </template>
                         </div>
                         <div class="text">
-                            Дипломный проект
+                            Дипломний проект
                             <br>
-                            Студента 452 группы
+                            Студента 452 групи
                             <br>
                             Павлюка Андреса
                         </div>
@@ -91,24 +91,24 @@
 
                 if (this.$auth.check(['admin', 'manager', 'user'])) {
                     menu.push({
-                        name: 'Личный кабинет',
+                        name: 'Особистий кабінет',
                         route: 'Account',
                     });
                 }
 
                 if (this.$auth.check(['admin', 'manager'])) {
                     menu.push({
-                        name: 'Все отчеты',
+                        name: 'Усі звіти',
                         route: 'Reports',
                     });
 
                     menu.push({
-                        name: 'Пользователи',
+                        name: 'Користувачі',
                         route: 'Users',
                     });
 
                     menu.push({
-                        name: 'Цикловые комиссии',
+                        name: 'Циклові комісії',
                         route: 'Categories',
                     });
                 }
@@ -138,9 +138,9 @@
 
             exit() {
                 this
-                    .$confirm('Вы действительно хотите выйти из системы?', {
-                        confirmButtonText: 'Выйти',
-                        cancelButtonText: 'Нет',
+                    .$confirm('Ви дійсно хочете вийти з системи?', {
+                        confirmButtonText: 'Вийти',
+                        cancelButtonText: 'Відміна',
                     })
                     .then(() => this.$auth.logout())
                     .catch(_.noop)

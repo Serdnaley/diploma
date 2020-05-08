@@ -1,5 +1,5 @@
 <template>
-    <h1 class="error-403">Доступ запрещен</h1>
+    <h1 class="error-403">Доступ заборонено</h1>
 </template>
 
 <script>

@@ -13,7 +13,7 @@
             >
                 <el-tab-pane
                     name="password"
-                    label="Логин/Пароль"
+                    label="Логін/Пароль"
                     style="margin: 0;"
                 />
                 <el-tab-pane
@@ -76,7 +76,7 @@
                     type="error"
                     :closable="false"
                     show-icon
-                    title="Неверно введены данные."
+                    title="Невірно введені дані."
                 />
             </el-form-item>
 
@@ -85,14 +85,14 @@
                     type="primary"
                     @click="submit()"
                 >
-                    Войти
+                    Війти
                 </el-button>
                 <el-button
                     v-if="$auth.check() && $auth.user()"
                     type="text"
                     @click="$router.replace({ ...$route, query: null })"
                 >
-                    Продолжить как {{ $auth.user().short_name }}
+                    Продовжити як {{ $auth.user().short_name }}
                 </el-button>
             </el-form-item>
 
@@ -136,7 +136,7 @@
                     await this
                         .submit()
                         .catch(() => {
-                            this.$message.error('Автоматическая авторизация не удалась');
+                            this.$message.error('Автоматична авторизація не вдалася');
                         });
 
                 }
@@ -150,31 +150,31 @@
                     token: [
                         {
                             required: this.auth_type === 'token',
-                            message: 'Введите токен',
+                            message: 'Введіть токен',
                             trigger: 'blur',
                         },
                     ],
                     email: [
                         {
                             required: this.auth_type === 'password',
-                            message: 'Введите ваш email',
+                            message: 'Введіть ваш email',
                             trigger: 'blur',
                         },
                         {
                             type: 'email',
-                            message: 'Введите правильный email',
+                            message: 'Введіть правильний email',
                             trigger: 'blur',
                         },
                     ],
                     password: [
                         {
                             required: this.auth_type === 'password',
-                            message: 'Введите пароль',
+                            message: 'Введіть пароль',
                             trigger: 'blur',
                         },
                         {
                             min: 6,
-                            message: 'Пароль должен быть больше 6 символов',
+                            message: 'Пароль повинен бути більше 6 символів',
                             trigger: 'blur',
                         },
                     ],
@@ -199,7 +199,7 @@
 
                     if (!validateForm(this.$refs.form)) {
                         this.$notify({
-                            title: 'Данные введены неверно',
+                            title: 'Дані введені невірно',
                             type: 'error',
                             position: 'bottom-left',
                         });

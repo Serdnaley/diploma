@@ -58,7 +58,7 @@ class UserCategoryController extends Controller
         if ( !$category ) {
             return response()->json([
                 'error' => 'error',
-                'message' => 'Объект не найден. Возможно он был удалён.'
+                'message' => 'Об\'єкт не знайдено. Можливо він був видалений.'
             ], 404);
         }
 

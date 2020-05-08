@@ -53,7 +53,7 @@
             },
             catch: {
                 type: [Function, String],
-                default: 'Не удалось загрузить значения для выбора.'
+                default: 'Не вдалося завантажити значення для вибору.'
             },
             defaultValue: {
                 type: [String, Object, Number]
@@ -83,7 +83,7 @@
                     .catch(
                         typeof this.catch === 'function'
                             ? this.catch
-                            : () => this.$message.error(this.catch || 'Не удалось загрузить элементы списка')
+                            : () => this.$message.error(this.catch || 'Не вдалося завантажити елементи списку')
                     );
 
                 if (res) {

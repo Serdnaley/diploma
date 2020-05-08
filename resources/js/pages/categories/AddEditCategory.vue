@@ -1,7 +1,7 @@
 <template>
     <route-modal
         :back-to-default="{name: 'Categories'}"
-        :title="(category_id ? 'Редактировать' : 'Добавить') + ' комиссию'"
+        :title="(category_id ? 'Редагувати' : 'Створити') + ' комісію'"
         width="30%"
         @close="handleClose()"
         ref="modal"
@@ -15,7 +15,7 @@
         >
 
             <el-form-item
-                label="Название:"
+                label="Назва:"
                 prop="name"
             >
                 <el-input v-model="category_clone.name"/>
@@ -32,7 +32,7 @@
                     type="primary"
                     @click="submit()"
                 >
-                    {{ category_id ? 'Сохранить' : 'Добавить' }}
+                    {{ category_id ? 'Зберегти' : 'Створити' }}
                 </el-button>
             </el-form-item>
 
@@ -62,12 +62,12 @@
                     name: [
                         {
                             required: true,
-                            message: 'Поле обязательно к заполнению',
+                            message: 'Поле обов\'язково до заповнення',
                             trigger: 'blur',
                         },
                         {
                             min: 3,
-                            message: 'Слишком короткое название',
+                            message: 'Занадто коротка назва',
                             trigger: 'blur',
                         },
                     ],
@@ -116,7 +116,7 @@
                         .catch((err) => {
                             this.$message.error(
                                 errorHandler(err).message
-                                || 'Не удалось загрузить комиссию'
+                                || 'Не вдалося завантажити комісію'
                             );
                         });
                 } else {
@@ -130,7 +130,7 @@
 
                 if (!validateForm(this.$refs.form)) {
                     this.$notify({
-                        title: 'Данные введены неверно',
+                        title: 'Дані введені невірно',
                         type: 'error',
                         position: 'bottom-left',
                     });
@@ -151,7 +151,7 @@
                     .catch((err) => {
                         let error = errorHandler(err);
                         this.errors = error;
-                        this.$message.error(error.message || 'Не удалось сохранить комиссию');
+                        this.$message.error(error.message || 'Не вдалося зберегти комісію');
                     });
 
                 this.loading = false;

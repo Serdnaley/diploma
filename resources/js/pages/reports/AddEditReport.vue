@@ -1,7 +1,7 @@
 <template>
     <route-modal
         :back-to-default="{name: 'Reports'}"
-        :title="(report_id ? 'Редактировать' : 'Добавить') + ' отчет'"
+        :title="(report_id ? 'Редагувати' : 'Створити') + ' звіт'"
         width="30%"
         @close="handleClose()"
         ref="modal"
@@ -20,12 +20,12 @@
                     class="stylized-tabs"
                 >
                     <el-tab-pane
-                        label="Флюрография"
+                        label="Флюорографія"
                         name="fluorography"
                         style="margin: 0;"
                     />
                     <el-tab-pane
-                        label="Медкомиссия"
+                        label="Медкомісія"
                         name="medical_board"
                         style="margin: 0;"
                     />
@@ -33,7 +33,7 @@
             </el-form-item>
 
             <el-form-item
-                label="Пользователь:"
+                label="Користувач:"
                 prop="user_id"
             >
                 <remote-select
@@ -70,13 +70,13 @@
                 prop="attachment_ids"
             >
                 <div class="fz-large">
-                    Загрузите фото отчеты:
+                    Завантажте фото звіти:
                 </div>
 
                 <p>
                     <el-row class="fz-medium lh-primary">
-                        Загружено: {{ attachments_count }}
-                        <span class="color-text-placeholder">(минимум 2)</span>
+                        Завантажено: {{ attachments_count }}
+                        <span class="color-text-placeholder">(мінімум 2)</span>
                     </el-row>
                     <el-progress
                         :percentage="(attachments_count <= 2 ? attachments_count : 2) / 2 * 100"
@@ -106,13 +106,13 @@
                     @click="submit()"
                     :disabled="attachments_count < 2"
                 >
-                    {{ report_id ? 'Сохранить' : 'Добавить' }}
+                    {{ report_id ? 'Зберегти' : 'Створити' }}
                 </el-button>
                 <el-button
                     type="default"
                     @click="triggerUpload()"
                 >
-                    Прикрепить фото
+                    Завантажити фото
                 </el-button>
             </el-form-item>
 
@@ -206,7 +206,7 @@
                         .catch((err) => {
                             this.$message.error(
                                 errorHandler(err).message
-                                || 'Не удалось загрузить отчет'
+                                || 'Не вдалося загрузити відлік'
                             );
                         });
                 } else {
@@ -220,7 +220,7 @@
 
                 if (!validateForm(this.$refs.form)) {
                     this.$notify({
-                        title: 'Данные введены неверно',
+                        title: 'Дані введені невірно',
                         type: 'error',
                         position: 'bottom-left',
                     });
@@ -241,7 +241,7 @@
                     .catch((err) => {
                         let error = errorHandler(err);
                         this.errors = error;
-                        this.$message.error(error.message || 'Не удалось сохранить отчет');
+                        this.$message.error(error.message || 'Не вдалося зберегти звіт');
                     });
 
                 this.loading = false;

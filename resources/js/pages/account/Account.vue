@@ -35,12 +35,12 @@
                         <path d="m45.565 26.1c-8.07-.656-23.788 7.468-28.24 14.949 2.171-9.972 21.435-18.17 28.24-14.949"/>
                     </g>
                 </svg>
-                <h1>Добро пожаловать, {{ $auth.user().first_name }}</h1>
+                <h1>Ласкаво просимо, {{ $auth.user().first_name }}</h1>
                 <el-button
                     type="primary"
                     @click="add()"
                 >
-                    Добавить отчет
+                    Додати звіт
                 </el-button>
             </div>
         </div>
@@ -62,7 +62,7 @@
                             align="middle"
                         >
                             <div class="">
-                                {{ report.type === 'fluorography' ? 'Флюорография' : 'Мед. комиссия' }},
+                                {{ report.type === 'fluorography' ? 'Флюорографія' : 'Медкомісія' }},
                                 {{ report.date | formatDate }}
                             </div>
                             <el-button
@@ -71,7 +71,7 @@
                                 size="mini"
                                 @click="edit(report)"
                             >
-                                Изменить
+                                Змінити
                             </el-button>
                         </el-row>
                     </el-card>
@@ -82,7 +82,7 @@
                 class="entities-list__no-items"
                 v-else
             >
-                Ваша история пуста
+                Ваша історія порожня
             </div>
         </div>
 
@@ -124,7 +124,7 @@
                 await this
                     .getUserReports(this.$auth.user())
                     .catch((err) => {
-                        this.$message.error(errorHandler(err).message || 'Не удалось загрузить отчеты')
+                        this.$message.error(errorHandler(err).message || 'Не вдалося завантажити звіти')
                     });
 
                 this.loading = false;

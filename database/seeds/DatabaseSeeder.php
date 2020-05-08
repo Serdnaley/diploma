@@ -14,15 +14,15 @@ class DatabaseSeeder extends Seeder
         $admin = factory(\App\User::class)->create([
             'first_name' => 'Андрес',
             'last_name' => 'Павлюк',
-            'patronymic' => 'Игоревич',
+            'patronymic' => 'Ігорович',
             'role' => 'admin',
             'email' => 'admin@admin.com',
         ]);
 
         $manager = factory(\App\User::class)->create([
-            'first_name' => 'Юлия',
+            'first_name' => 'Юлія',
             'last_name' => 'Арбузова',
-            'patronymic' => 'Викторовна',
+            'patronymic' => 'Вікторовна',
             'role' => 'manager',
             'email' => 'manager@admin.com',
         ]);
@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
         $user = factory(\App\User::class)->create([
             'first_name' => 'Богдан',
             'last_name' => 'Орлов',
-            'patronymic' => 'Игоревич',
+            'patronymic' => 'Ігорович',
             'role' => 'user',
             'email' => 'user@admin.com',
         ]);

@@ -64,7 +64,7 @@
                     <div v-show="showFail(file)"
                          class="el-upload-list__item-fail">
                         <p class="fz-medium">
-                            Ошибка
+                            Помилка
                             <el-tooltip :content="too_large_message">
                                 <i class="far fa-question-circle"/>
                             </el-tooltip>
@@ -73,7 +73,7 @@
                             size="medium"
                             @click="uploadAgain(file)"
                         >
-                            Еще раз
+                            Ще раз
                         </el-button>
                         <span></span>
                         <el-button
@@ -81,7 +81,7 @@
                             type="text"
                             @click="abort(file)"
                         >
-                            Отмена
+                            Відміна
                         </el-button>
                     </div>
                 </transition>
@@ -130,7 +130,7 @@
                 computed_list: [],
                 tempIndex: 0,
                 has_error: false,
-                too_large_message: 'Файлы должны быть формата .png или .jpg и размер не больше 5мб.',
+                too_large_message: 'Файли повинні бути формату .png або .jpg і розмір не більше 5мб.',
             }
         },
 
@@ -304,7 +304,7 @@
                                 padding: 5px;
                                 border-radius: 50%;
                                 animation: rotate360 2s linear infinite;
-                                
+
                                 &__track {
                                     stroke: transparent;
                                 }

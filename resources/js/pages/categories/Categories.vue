@@ -9,12 +9,12 @@
             align="middle"
             class="title"
         >
-            <h1>Цикловые комиссии</h1>
+            <h1>Циклові комісії</h1>
             <el-button
                 type="primary"
                 @click="add()"
             >
-                Добавить комиссию
+                Створити комісію
             </el-button>
         </el-row>
 
@@ -26,10 +26,10 @@
             <el-card shadow="never" class="entities-list__head">
                 <el-row>
                     <el-col :span="20">
-                        Имя
+                        Ім'я
                     </el-col>
                     <el-col :span="4">
-                        Действия
+                        Дії
                     </el-col>
                 </el-row>
             </el-card>
@@ -54,14 +54,14 @@
                                     style="margin-right: 10px;"
                                     @click="edit(category)"
                                 >
-                                    Изменить
+                                    Змінити
                                 </span>
                                 <span
                                     class="color-danger clickable"
                                     style="margin-right: 10px;"
                                     @click="doDelete(category)"
                                 >
-                                    Удалить
+                                    Видалити
                                 </span>
                             </el-col>
                         </el-row>
@@ -73,7 +73,7 @@
                 class="entities-list__no-items"
                 v-else
             >
-                Ничего не найдено
+                Нічого не знайдено
             </div>
 
         </div>
@@ -120,7 +120,7 @@
 
                 await this.getCategories()
                     .catch((err) => {
-                        this.$message.error(errorHandler(err).message || 'Не удалось загрузить комиссии')
+                        this.$message.error(errorHandler(err).message || 'Не вдалося завантажити комісії')
                     });
 
                 this.loading = false;
@@ -143,11 +143,11 @@
 
                 let confirm = await this
                     .$confirm(
-                        'Вы действительно хотите удалить "' + item.name + '"?',
-                        'Подтвердите действие',
+                        'Ви дійсно хочете видалити "' + item.name + '"?',
+                        'Підтвердіть дію',
                         {
-                            confirmButtonText: 'Удалить',
-                            cancelButtonText: 'Отмена',
+                            confirmButtonText: 'Видалити',
+                            cancelButtonText: 'Відміна',
                         }
                     )
                     .catch(_.noop);
@@ -159,7 +159,7 @@
                 await this
                     .deleteCategory({id: item.id})
                     .catch(err => {
-                        this.$message.error(errorHandler(err).message || 'Не удалось удалить комиссию');
+                        this.$message.error(errorHandler(err).message || 'Не вдалося видалити комісію');
                     });
 
                 this.loading = false;

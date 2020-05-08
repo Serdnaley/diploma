@@ -1,7 +1,7 @@
 <template>
     <route-modal
         :back-to-default="{name: 'Users'}"
-        :title="(user_id ? 'Редактировать' : 'Добавить') + ' пользователя'"
+        :title="(user_id ? 'Редагувати' : 'Створити') + ' користувача'"
         width="30%"
         @close="handleClose()"
         ref="modal"
@@ -15,7 +15,7 @@
         >
 
             <el-form-item
-                label="Имя:"
+                label="Ім'я:"
                 prop="first_name"
             >
                 <el-input
@@ -25,7 +25,7 @@
             </el-form-item>
 
             <el-form-item
-                label="Фамилия:"
+                label="Прізвище:"
                 prop="last_name"
             >
                 <el-input
@@ -35,7 +35,7 @@
             </el-form-item>
 
             <el-form-item
-                label="Отчество:"
+                label="По батькові:"
                 prop="patronymic"
             >
                 <el-input
@@ -66,17 +66,17 @@
                 >
                     <el-option
                         value="admin"
-                        label="Администратор"
+                        label="Адміністратор"
                     />
                     <el-option
                         value="user"
-                        label="Пользователь"
+                        label="Користувач"
                     />
                 </el-select>
             </el-form-item>
 
             <el-form-item
-                label="Цикловая комиссия:"
+                label="Циклова комісія:"
                 prop="user_category_id"
             >
                 <remote-select
@@ -125,7 +125,7 @@
                     type="primary"
                     @click="submit()"
                 >
-                    {{ user_id ? 'Сохранить' : 'Добавить' }}
+                    {{ user_id ? 'Зберегти' : 'Створити' }}
                 </el-button>
             </el-form-item>
 
@@ -166,55 +166,55 @@
                     first_name: [
                         {
                             required: true,
-                            message: 'Введите имя пользователя',
+                            message: 'Введіть ім\'я користувача',
                             trigger: 'blur',
                         },
                         {
                             min: 2,
-                            message: 'Слишком короткое имя',
+                            message: 'Занадто короткий ім\'я',
                             trigger: 'blur',
                         },
                     ],
                     last_name: [
                         {
                             required: true,
-                            message: 'Введите фамилию пользователя',
+                            message: 'Введіть прізвище користувача',
                             trigger: 'blur',
                         },
                         {
                             min: 2,
-                            message: 'Слишком короткая фамилия',
+                            message: 'Занадто коротка прізвище',
                             trigger: 'blur',
                         },
                     ],
                     patronymic: [
                         {
                             required: true,
-                            message: 'Введите отчество пользователя',
+                            message: 'Введіть по батькові користувача',
                             trigger: 'blur',
                         },
                         {
                             min: 2,
-                            message: 'Слишком короткое отчество',
+                            message: 'Занадто короткий батькові',
                             trigger: 'blur',
                         },
                     ],
                     role: [
                         {
                             required: true,
-                            message: 'Выберите роль пользователя',
+                            message: 'Виберіть роль користувача',
                             trigger: 'blur',
                         },
                     ],
                     email: [
                         {
                             required: true,
-                            message: 'Введите email пользователя',
+                            message: 'Введіть email користувача',
                             trigger: 'blur',
                         },
                         {
                             type: 'email',
-                            message: 'Неверно введен email',
+                            message: 'Невірно введений email',
                             trigger: 'blur',
                         },
                     ],
@@ -254,7 +254,7 @@
                         .catch((err) => {
                             this.$message.error(
                                 errorHandler(err).message
-                                || 'Не удалось загрузить комиссию'
+                                || 'Не вдалося завантажити комісію'
                             );
                         });
                 } else {
@@ -268,7 +268,7 @@
 
                 if (!validateForm(this.$refs.form)) {
                     this.$notify({
-                        title: 'Данные введены неверно',
+                        title: 'Дані введені невірно',
                         type: 'error',
                         position: 'bottom-left',
                     });
@@ -289,7 +289,7 @@
                     .catch((err) => {
                         let error = errorHandler(err);
                         this.errors = error;
-                        this.$message.error(error.message || 'Не удалось сохранить пользователя');
+                        this.$message.error(error.message || 'Не вдалося зберегти користувача');
                     });
 
                 this.loading = false;

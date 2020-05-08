@@ -11,13 +11,13 @@
             align="middle"
             class="title"
         >
-            <h1>Отчеты</h1>
+            <h1>Звіти</h1>
             <el-button
                 type="primary"
                 class="screen-only"
                 @click="add()"
             >
-                Добавить отчет
+                Додати звіт
             </el-button>
         </el-row>
 
@@ -31,12 +31,12 @@
                 class="stylized-tabs"
             >
                 <el-tab-pane
-                    label="Флюрография"
+                    label="Флюорографія"
                     name="fluorography"
                     style="margin: 0;"
                 />
                 <el-tab-pane
-                    label="Медкомиссия"
+                    label="Медкомісія"
                     name="medical_board"
                     style="margin: 0;"
                 />
@@ -51,8 +51,8 @@
                 value-format="yyyy-MM-dd"
                 type="monthrange"
                 align="right"
-                start-placeholder="Начальная дата"
-                end-placeholder="Конечная дата"
+                start-placeholder="Початкова дата"
+                end-placeholder="Кінцева дата"
                 :clearable="false"
             />
 
@@ -62,15 +62,15 @@
                 v-model="filter_data.category"
                 :method="getCategories"
                 clearable
-                placeholder="Выбрать комиссию"
+                placeholder="Вибрати комісію"
             >
                 <el-option
                     value="all"
-                    label="Все"
+                    label="Усі"
                 />
                 <el-option
                     value="without"
-                    label="Без комиссии"
+                    label="Без комісії"
                 />
                 <template v-slot:item="{item}">
                     <el-option
@@ -90,7 +90,7 @@
             <el-card shadow="never" class="entities-list__head">
                 <el-row>
                     <el-col :span="10">
-                        ФИО
+                        ПІБ
                     </el-col>
                     <el-col :span="8">
                         Статус
@@ -102,7 +102,7 @@
                         :span="4"
                         class="screen-only"
                     >
-                        Действия
+                        Дії
                     </el-col>
                 </el-row>
             </el-card>
@@ -134,30 +134,30 @@
                                             v-if="report.status === 'new'"
                                             class="color-danger"
                                         >
-                                            Нет отчетов
+                                            Немає звітів
                                         </div>
                                         <div
                                             v-if="report.status === 'planned'"
                                             class="color-info"
                                         >
-                                            Запланированно на {{ report.date | formatDate }}
+                                            Заплановано на {{ report.date | formatDate }}
                                         </div>
                                         <div
                                             v-if="report.status === 'expired'"
                                             class="color-info"
                                         >
                                             <template v-if="formatDate(report.date) !== formatDate(report.term)">
-                                                Запланированно на {{ report.date | formatDate }},
+                                                Заплановано на {{ report.date | formatDate }},
                                             </template>
                                             <div class="color-danger">
-                                                Нужно было пройти {{ report.term | formatDate }}
+                                                Треба було пройти {{ report.term | formatDate }}
                                             </div>
                                         </div>
                                         <div
                                             v-if="report.status === 'done'"
                                             class="color-success"
                                         >
-                                            Выполнено {{ report.date | formatDate }}
+                                            Виконано {{ report.date | formatDate }}
                                         </div>
                                     </el-col>
                                     <el-col :span="2">
@@ -175,14 +175,14 @@
                                             style="margin-right: 10px;"
                                             @click="edit(report)"
                                         >
-                                            Изменить
+                                            Змінити
                                         </span>
                                         <span
                                             class="color-danger clickable"
                                             style="margin-right: 10px;"
                                             @click="doDelete(report)"
                                         >
-                                            Удалить
+                                            Видалити
                                         </span>
                                     </el-col>
                                 </el-row>
@@ -196,7 +196,7 @@
                 class="entities-list__no-items"
                 v-else
             >
-                Ничего не найдено
+                Нічого не знайдено
             </div>
         </div>
 
@@ -286,7 +286,7 @@
                         category: this.filter_data.category,
                     })
                     .catch((err) => {
-                        this.$message.error(errorHandler(err).message || 'Не удалось загрузить отчет')
+                        this.$message.error(errorHandler(err).message || 'Не вдалося завантажити звіт')
                     });
 
                 this.loading = false;
@@ -296,7 +296,7 @@
                 if (group.date) {
                     return moment(group.date).format('MMMM, YYYY');
                 } else {
-                    return 'Без единого отчета';
+                    return 'Без жодного звіту';
                 }
             },
 
@@ -317,11 +317,11 @@
 
                 let confirm = await this
                     .$confirm(
-                        'Вы действительно хотите удалить "' + item.full_name + '"?',
-                        'Подтвердите действие',
+                        'Ви дійсно хочете видалити "' + item.full_name + '"?',
+                        'Підтвердіть дію',
                         {
-                            confirmButtonText: 'Удалить',
-                            cancelButtonText: 'Отмена',
+                            confirmButtonText: 'Видалити',
+                            cancelButtonText: 'Відміна',
                         }
                     )
                     .catch(_.noop);
@@ -333,7 +333,7 @@
                 await this
                     .deleteReport({id: item.id})
                     .catch(err => {
-                        this.$message.error(errorHandler(err).message || 'Не удалось удалить отчет');
+                        this.$message.error(errorHandler(err).message || 'Не вдалось видалити звіт');
                     });
 
                 this.loading = false;

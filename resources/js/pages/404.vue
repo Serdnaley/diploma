@@ -1,5 +1,5 @@
 <template>
-    <h1 class="error-404">Ничего не найдено</h1>
+    <h1 class="error-404">Нічого не знайдено</h1>
 </template>
 
 <script>
