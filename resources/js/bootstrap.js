@@ -7,7 +7,7 @@ import lodash from 'lodash'
 import moment from "moment"
 import VueImg from 'v-img'
 import ElementUI from 'element-ui'
-import ElementUILocale from 'element-ui/lib/locale/lang/ru-RU'
+import ElementUILocale from 'element-ui/lib/locale/lang/ua'
 import {loadProgressBar} from 'axios-progress-bar'
 
 import auth from './plugins/auth';
@@ -36,8 +36,8 @@ Vue.use(ElementUI, {locale: ElementUILocale});
 
 loadProgressBar();
 
-moment.locale('ua');
-moment.updateLocale('ua', {
+moment.locale('uk');
+moment.updateLocale('uk', {
     week: {
         dow: 1, // First day of week is Monday
         doy: 4  // First week of year must contain 4 January (7 + 1 - 4)

@@ -62,6 +62,8 @@ class UserCategoryController extends Controller
             ], 404);
         }
 
+        $category->load(['users']);
+
         return response()->json($category->toArray());
     }
 
@@ -95,8 +97,7 @@ class UserCategoryController extends Controller
             'name' => $request->name
         ]);
 
-
-        $category->users()->delete();
+        $category->users()->update(['user_category_id'=>null]);
 
         if ($request->user_ids) {
             $users = User::whereIn('id', $request->user_ids)->get();

@@ -113,12 +113,12 @@
                     });
                 }
 
-                if (this.$auth.check(['admin'])) {
-                    menu.push({
-                        name: 'Настройки',
-                        route: 'Settings',
-                    });
-                }
+                // if (this.$auth.check(['admin'])) {
+                //     menu.push({
+                //         name: 'Налаштування',
+                //         route: 'Settings',
+                //     });
+                // }
 
                 return menu;
             },

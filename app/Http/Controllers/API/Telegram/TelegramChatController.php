@@ -59,7 +59,7 @@ class TelegramChatController extends Controller
         if (!$chat) {
             return response()->json([
                 'error' => true,
-                'message' => 'Этот объект не найдена. Возможно, он был удалён.',
+                'message' => 'Цей об\'єкт не знайдена. Можливо, він був видалений.',
             ], 404);
         }
 
@@ -91,7 +91,7 @@ class TelegramChatController extends Controller
         if (!$chat) {
             return response()->json([
                 'error' => true,
-                'message' => 'Этот объект не найдена. Возможно, он был удалён.',
+                'message' => 'Цей об\'єкт не знайдена. Можливо, він був видалений.',
             ], 404);
         }
 
@@ -100,7 +100,7 @@ class TelegramChatController extends Controller
         if ( !$result ) {
             return response()->json([
                 'error' => true,
-                'message' => 'Ошибка создания ссылки. Убедитесь, что бот является администратором выбранного чата.'
+                'message' => 'Помилка створення посилання. Переконайтеся, що бот є адміністратором обраного чату.'
             ], 422);
         }
 

@@ -2,7 +2,7 @@
     <route-modal
         :back-to-default="{name: 'Categories'}"
         :title="(category_id ? 'Редагувати' : 'Створити') + ' комісію'"
-        width="30%"
+        width="650px"
         @close="handleClose()"
         ref="modal"
     >
@@ -21,6 +21,14 @@
                 <el-input v-model="category_clone.name"/>
             </el-form-item>
 
+            <el-transfer
+                filterable
+                filter-placeholder="Пошук..."
+                v-loading="users_loader"
+                v-model="category_clone.user_ids"
+                :data="users_data"
+            />
+
             <ul v-if="errors" class="color-danger">
                 <li v-for="error in errors">
                     {{ error[0] }}
@@ -31,6 +39,7 @@
                 <el-button
                     type="primary"
                     @click="submit()"
+                    style="margin-top: 30px;"
                 >
                     {{ category_id ? 'Зберегти' : 'Створити' }}
                 </el-button>
@@ -55,6 +64,7 @@
         data() {
             return {
                 loading: false,
+                users_loader: false,
 
                 errors: false,
 
@@ -75,6 +85,8 @@
 
                 category_default: {
                     name: '',
+                    user_ids: [],
+                    users: [],
                 },
 
                 category_clone: {},
@@ -91,21 +103,35 @@
         },
 
         computed: {
-            ...mapGetters(['category']),
+            ...mapGetters(['category', "users"]),
 
             category_id() {
                 return this.$route.params.category_id;
+            },
+
+            users_data() {
+                if (!this.users)
+                    return [];
+                else
+                    return this.users.map(user => ({
+                        key: user.id,
+                        label: user.full_name,
+                    }));
             },
         },
 
         watch: {
             category() {
                 this.category_clone = _.cloneDeep(this.category);
+                this.$set(this.category_clone, 'user_ids', []);
+                this.category_clone.users.map(user => {
+                    this.category_clone.user_ids.push(user.id);
+                });
             }
         },
 
         methods: {
-            ...mapActions(['getCategory', "updateCategory", "addCategory"]),
+            ...mapActions(['getCategory', "updateCategory", "addCategory", "getUsers"]),
 
             async fetchData() {
                 this.loading = true;
@@ -124,6 +150,16 @@
                 }
 
                 this.loading = false;
+
+                await this.fetchUsers();
+            },
+
+            async fetchUsers() {
+                this.users_loader = true;
+
+                await this.getUsers();
+
+                this.users_loader = false;
             },
 
             async submit() {

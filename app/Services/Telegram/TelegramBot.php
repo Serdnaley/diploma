@@ -99,18 +99,18 @@ class TelegramBot
         if (!$this->validateUser()) {
             return new JsonResponse([
                 'error' => true,
-                'message' => 'Требуется авторизация пользователя в системе.',
+                'message' => 'Необхідно ввійти користувача в системі.',
             ]);
         }
 
         $this->command = $this->message->getText();
 
         // Ссылка для входа в систему
-        if ( $this->command == 'Войти в систему' ) {
+        if ( $this->command == 'Увійти до системи' ) {
             TelegramAPI::sendMessage([
                 'chat_id' => $this->chat->id,
-                'text' => "Используйте ссылку для входа в приложение.".
-                    "\nЕсли ссылка перестала работать - откройте меню и запросите новую.",
+                'text' => "Використовуйте посилання для входу в додаток.".
+                    "\nЯкщо посилання перестала працювати - відкрийте меню і запросіть нову.",
                 'parse_mode' => 'Markdown',
                 'reply_markup' => TelegramAPI::replyKeyboardMarkup([
                     'inline_keyboard' => [
@@ -125,7 +125,7 @@ class TelegramBot
         else {
             TelegramAPI::sendMessage([
                 'chat_id' => $this->chat->id,
-                'text' => "Используйте меню для работы с системой.",
+                'text' => "Використовуйте меню для роботи з системою.",
                 'parse_mode' => 'Markdown',
                 'reply_markup' => $this->defaultKeyboard()
             ]);
@@ -176,7 +176,7 @@ class TelegramBot
 
         TelegramAPI::sendMessage([
             'chat_id' => $this->chat->id,
-            'text' => "Ваш аккаунт ещё не активирован. \nОбратитесь к администрации для активации.\n\n@serdnaley",
+            'text' => "Ваш аккаунт ще не активований. \nЗверніться до адміністрації для активації.\n\n@serdnaley",
             'parse_mode' => 'Markdown',
             'reply_markup' => $this->defaultKeyboard()
         ]);
@@ -195,7 +195,7 @@ class TelegramBot
         return TelegramAPI::replyKeyboardMarkup([
             'keyboard' => [
                 [
-                    ['text' => 'Войти в систему'],
+                    ['text' => 'Увійти до системи'],
                 ]
             ],
         ]);
