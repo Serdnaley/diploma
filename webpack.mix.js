@@ -1,4 +1,5 @@
 const mix = require('laravel-mix');
+const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 
 /*
  |--------------------------------------------------------------------------
@@ -15,3 +16,32 @@ mix
     .js('resources/js/app.js', 'public/js/')
     .copyDirectory('node_modules/element-ui/packages/theme-chalk/src/fonts', 'public/fonts')
     .version();
+
+// PWA
+mix.webpackConfig({
+    plugins: [
+        new SWPrecacheWebpackPlugin({
+            cacheId: 'pwa',
+            filename: 'service-worker.js',
+            staticFileGlobs: ['public/**/*.{css,eot,svg,ttf,woff,woff2,js,html}'],
+            minify: true,
+            stripPrefix: 'public/',
+            handleFetch: true,
+            dynamicUrlToDependencies: {
+                '/': ['resources/views/index.blade.php'],
+            },
+            staticFileGlobsIgnorePatterns: [/\.map$/, /mix-manifest\.json$/, /manifest\.json$/, /service-worker\.js$/],
+            navigateFallback: '/',
+            runtimeCaching: [
+                {
+                    urlPattern: /^https:\/\/fonts\.googleapis\.com\//,
+                    handler: 'cacheFirst'
+                },
+                {
+                    urlPattern: /^https:\/\/www\.thecocktaildb\.com\/images\/media\/drink\/(\w+)\.jpg/,
+                    handler: 'cacheFirst'
+                }
+            ],
+        })
+    ]
+});
