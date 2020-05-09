@@ -14,8 +14,9 @@ const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 
 mix
     .js('resources/js/app.js', 'public/js/')
-    .copyDirectory('node_modules/element-ui/packages/theme-chalk/src/fonts', 'public/fonts')
-    .version();
+    .version()
+    .copyDirectory('resources/icons', 'public/icons')
+    .copyDirectory('node_modules/element-ui/packages/theme-chalk/src/fonts', 'public/fonts');
 
 // PWA
 mix.webpackConfig({

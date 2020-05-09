@@ -11,6 +11,7 @@ import ElementUILocale from 'element-ui/lib/locale/lang/ua'
 import {loadProgressBar} from 'axios-progress-bar'
 
 import auth from './plugins/auth';
+import serviceWorker from './plugins/service-worker';
 
 import router from './router';
 import store from './store';
@@ -43,18 +44,3 @@ moment.updateLocale('uk', {
         doy: 4  // First week of year must contain 4 January (7 + 1 - 4)
     }
 });
-if ('serviceWorker' in navigator) {
-    console.log(1);
-    window.addEventListener('load', function () {
-        console.log(2);
-        navigator.serviceWorker
-            .register('/service-worker.js')
-            .then(function (registration) {
-                // Registration was successful
-                console.log('ServiceWorker registration successful with scope: ', registration.scope);
-            }, function (err) {
-                // registration failed :(
-                console.log('ServiceWorker registration failed: ', err);
-            });
-    });
-}
