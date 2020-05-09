@@ -24,6 +24,7 @@
             <el-transfer
                 filterable
                 filter-placeholder="Пошук..."
+                :titles="['Інші комісії', 'Ця комісія']"
                 v-loading="users_loader"
                 v-model="category_clone.user_ids"
                 :data="users_data"
