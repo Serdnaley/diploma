@@ -18,7 +18,7 @@ const dependencies = Object.keys(packageJson.dependencies);
 mix
     .extract(dependencies)
     .js('resources/js/app.js', 'public/js/')
-    .copyDirectory('resources/icons', 'public/icons')
+    .copyDirectory('resources/favicons', 'public/favicons')
     .copyDirectory('node_modules/element-ui/packages/theme-chalk/src/fonts', 'public/fonts')
     .webpackConfig({
         plugins: [

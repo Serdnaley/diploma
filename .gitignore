@@ -3,9 +3,11 @@
 /public/storage
 /public/js
 /public/fonts
-/public/icons
+/public/favicons
 /public/mix-manifest.json
 /public/service-worker.js
+/public/sw.js
+/public/workbox-*
 /storage/*.key
 /vendor
 /.idea
