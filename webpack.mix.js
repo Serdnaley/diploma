@@ -1,5 +1,8 @@
 const mix = require('laravel-mix');
-const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
+const workboxPlugin = require('workbox-webpack-plugin');
+
+const packageJson = require('./package.json');
+const dependencies = Object.keys(packageJson.dependencies);
 
 /*
  |--------------------------------------------------------------------------
@@ -13,36 +16,37 @@ const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
  */
 
 mix
+    .extract(dependencies)
     .js('resources/js/app.js', 'public/js/')
-    .version()
     .copyDirectory('resources/icons', 'public/icons')
-    .copyDirectory('node_modules/element-ui/packages/theme-chalk/src/fonts', 'public/fonts');
-
-// PWA
-mix.webpackConfig({
-    plugins: [
-        new SWPrecacheWebpackPlugin({
-            cacheId: 'pwa',
-            filename: 'service-worker.js',
-            staticFileGlobs: ['public/**/*.{css,eot,svg,ttf,woff,woff2,js,html}'],
-            minify: true,
-            stripPrefix: 'public/',
-            handleFetch: true,
-            dynamicUrlToDependencies: {
-                '/': ['resources/views/index.blade.php'],
-            },
-            staticFileGlobsIgnorePatterns: [/\.map$/, /mix-manifest\.json$/, /manifest\.json$/, /service-worker\.js$/],
-            navigateFallback: '/',
-            runtimeCaching: [
-                {
-                    urlPattern: /^https:\/\/fonts\.googleapis\.com\//,
-                    handler: 'cacheFirst'
-                },
-                {
-                    urlPattern: /^https:\/\/www\.thecocktaildb\.com\/images\/media\/drink\/(\w+)\.jpg/,
-                    handler: 'cacheFirst'
-                }
-            ],
-        })
-    ]
-});
+    .copyDirectory('node_modules/element-ui/packages/theme-chalk/src/fonts', 'public/fonts')
+    .webpackConfig({
+        plugins: [
+            new workboxPlugin({
+                globDirectory: `${__dirname}/public`,
+                globPatterns: [
+                    '**/*.{html,css,js}',
+                    'fonts/**/*.*'
+                ],
+                swDest: path.join(`${__dirname}/public`, 'sw.js'),
+                clientsClaim: true,
+                skipWaiting: true,
+                runtimeCaching: [
+                    {
+                        urlPattern: new RegExp(`${process.env.APP_URL}`),
+                        handler: 'networkFirst',
+                        options: {
+                            cacheName: `${process.env.APP_NAME}-${process.env.APP_ENV}`
+                        }
+                    },
+                    {
+                        urlPattern: new RegExp('https://fonts.(googleapis|gstatic).com'),
+                        handler: 'cacheFirst',
+                        options: {
+                            cacheName: 'google-fonts'
+                        }
+                    }
+                ]
+            }),
+        ]
+    });

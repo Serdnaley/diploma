@@ -2,11 +2,15 @@ import Vue from 'vue'
 import bearer from '@websanova/vue-auth/drivers/auth/bearer'
 import axios from '@websanova/vue-auth/drivers/http/axios.1.x'
 import router from '@websanova/vue-auth/drivers/router/vue-router.2.x'
+import {MessageBox} from "element-ui";
 
-const error = function () {
-    Vue.auth.logout();
-
-    alert('session expired');
+const error = function (e) {
+    if (e.response) {
+        MessageBox('Ваша сессия истекла');
+        Vue.auth.logout();
+    } else {
+        MessageBox('Проверьте ваше подключение к интернету.', 'Упс... Что-то пошло не так...');
+    }
 };
 
 export default {
