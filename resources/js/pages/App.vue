@@ -156,6 +156,7 @@
         display: flex;
         height: 100vh;
         padding-bottom: 100px;
+        overflow-y: auto;
 
         .aside {
             position: fixed;

@@ -206,7 +206,7 @@
                 position: absolute;
                 top: -20vh;
 
-                background: linear-gradient(to top, #fff, #fff, transparent);
+                background: linear-gradient(to top, #fff, #fff, rgba(255,255,255,0));
             }
 
             &__group {
