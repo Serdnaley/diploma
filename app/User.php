@@ -174,7 +174,7 @@ class User extends Authenticatable implements JWTSubject
      */
     public function getAuthUrlAttribute()
     {
-        $path = '/login';
+        $path = '/#/login';
         $attributes = [
             'auth_token' => $this->fast_auth_token
         ];

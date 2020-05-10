@@ -141,7 +141,7 @@ class UserController extends Controller
         if ($user->wasChanged('telegram_chat_id') && $user->telegram_chat_id) {
             TelegramAPI::sendMessage([
                 'chat_id' => $user->telegram_chat_id,
-                'text' => "{$user->first_name}, ваш аккаунт был активирован.",
+                'text' => "{$user->first_name}, ваш аккаунт було активовано.",
                 'parse_mode' => 'Markdown',
                 'reply_markup' => TelegramBot::defaultKeyboard(),
             ]);

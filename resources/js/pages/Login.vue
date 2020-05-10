@@ -128,7 +128,7 @@
 
         created() {
             this.$nextTick(async () => {
-                let token = getQueryVariable('auth_token');
+                let token = this.$route.query.auth_token;
                 if (token) {
                     this.form.token = token;
                     this.auth_type = 'token';
