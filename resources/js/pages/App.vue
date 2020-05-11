@@ -69,7 +69,12 @@
         </el-aside>
 
         <el-main class="main">
-            <router-view/>
+            <transition
+                name="router-transition"
+                mode="out-in"
+            >
+                <router-view/>
+            </transition>
         </el-main>
 
     </el-row>

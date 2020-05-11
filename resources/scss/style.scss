@@ -18,6 +18,30 @@ body {
     box-shadow: none !important;
 }
 
+.router-transition {
+    &-enter {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+
+    &-enter-active {
+        transition:
+            opacity .5s ease,
+            transform .5s ease;
+    }
+
+    &-leave {
+        transform: translateX(-30px);
+        opacity: 0;
+    }
+
+    &-leave-active {
+        transition:
+            opacity .3s ease,
+            transform .3s ease;
+    }
+}
+
 /* Color */
 
 .color-primary {
