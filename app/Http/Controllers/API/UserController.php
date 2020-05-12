@@ -20,7 +20,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
+        $users = User::orderByDesc('created_at')->get();
 
         return UserResource::collection($users);
     }
@@ -47,6 +47,7 @@ class UserController extends Controller
         $password = $request->password ?: \Str::random(8);
 
         $user->password = bcrypt($password);
+        $user->fast_auth_token = \Str::random(10);
         $user->save();
 
         if ($user->telegram_chat_id) {

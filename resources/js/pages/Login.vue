@@ -85,7 +85,7 @@
                     type="primary"
                     @click="submit()"
                 >
-                    Війти
+                    Увійти
                 </el-button>
                 <el-button
                     v-if="$auth.check() && $auth.user()"
@@ -199,7 +199,7 @@
 
                     if (!validateForm(this.$refs.form)) {
                         this.$notify({
-                            title: 'Дані введені невірно',
+                            title: 'Невірно введені дані',
                             type: 'error',
                             position: 'bottom-left',
                         });

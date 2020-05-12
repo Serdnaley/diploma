@@ -53,7 +53,7 @@
             </el-form-item>
 
             <el-form-item
-                label="Дата прохождения:"
+                label="Дата проходження:"
                 prop="date"
             >
                 <el-date-picker
@@ -220,7 +220,7 @@
 
                 if (!validateForm(this.$refs.form)) {
                     this.$notify({
-                        title: 'Дані введені невірно',
+                        title: 'Невірно введені дані',
                         type: 'error',
                         position: 'bottom-left',
                     });

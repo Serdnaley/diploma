@@ -2,7 +2,8 @@
     <route-modal
         :back-to-default="{name: 'Categories'}"
         :title="(category_id ? 'Редагувати' : 'Створити') + ' комісію'"
-        width="650px"
+        class="add-edit-category"
+        width="800px"
         @close="handleClose()"
         ref="modal"
     >
@@ -167,7 +168,7 @@
 
                 if (!validateForm(this.$refs.form)) {
                     this.$notify({
-                        title: 'Дані введені невірно',
+                        title: 'Невірно введені дані',
                         type: 'error',
                         position: 'bottom-left',
                     });
@@ -206,3 +207,13 @@
         },
     }
 </script>
+
+<style lang="scss">
+    .add-edit-category {
+        .el-transfer {
+            &-panel {
+                width: 270px;
+            }
+        }
+    }
+</style>
