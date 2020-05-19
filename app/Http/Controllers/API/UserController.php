@@ -129,20 +129,10 @@ class UserController extends Controller
             ], 404);
         }
 
-        $data = $request->only([
-            'first_name',
-            'last_name',
-            'patronymic',
-            'user_category_id',
-            'telegram_chat_id',
-            'role',
-            'email',
-            'password',
-        ]);
+        $data = $request->validated();
 
-        // Хешируем пароль
-        if ( isset($data['password']) ) {
-            if ( $data['password'] ) {
+        if (isset($data['password'])) {
+            if ($data['password']) {
                 $data['password'] = \Hash::make($data['password']);
             } else {
                 unset($data['password']);

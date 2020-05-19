@@ -63,7 +63,7 @@
                     v-model="user_clone.role"
                     name="role"
                     style="width: 100%;"
-                    :disabled="!$auth.check(['admin', 'manager']) || $auth.user().id === user_clone.id"
+                    :disabled="!$auth.check('admin') || $auth.user().id === user_clone.id"
                 >
                     <el-option
                         value="admin"
@@ -85,7 +85,7 @@
                     name="user_category_id"
                     :method="getCategories"
                     style="width: 100%;"
-                    :disabled="!$auth.check(['admin', 'manager'])"
+                    :disabled="!$auth.check('admin')"
                 >
                     <template v-slot:item="{item}">
                         <el-option
@@ -107,7 +107,7 @@
                     clearable
                     style="width: 100%;"
                     placeholder="Не прив'язаний"
-                    :disabled="!$auth.check(['admin', 'manager'])"
+                    :disabled="!$auth.check('admin')"
                 >
                     <template v-slot:item="{item}">
                         <el-option
@@ -206,6 +206,7 @@
                     role: 'user',
                     email: '',
                     user_category_id: '',
+                    password: '',
                 },
 
                 rules: {
