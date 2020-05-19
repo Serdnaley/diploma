@@ -129,7 +129,7 @@ class UserController extends Controller
             ], 404);
         }
 
-        $user->update($request->only([
+        $data = $request->only([
             'first_name',
             'last_name',
             'patronymic',
@@ -137,7 +137,19 @@ class UserController extends Controller
             'telegram_chat_id',
             'role',
             'email',
-        ]));
+            'password',
+        ]);
+
+        // Хешируем пароль
+        if ( isset($data['password']) ) {
+            if ( $data['password'] ) {
+                $data['password'] = \Hash::make($data['password']);
+            } else {
+                unset($data['password']);
+            }
+        }
+
+        $user->update($data);
 
         if ($user->wasChanged('telegram_chat_id') && $user->telegram_chat_id) {
             TelegramAPI::sendMessage([

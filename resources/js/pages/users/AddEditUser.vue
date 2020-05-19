@@ -63,6 +63,7 @@
                     v-model="user_clone.role"
                     name="role"
                     style="width: 100%;"
+                    :disabled="!$auth.check(['admin', 'manager']) || $auth.user().id === user_clone.id"
                 >
                     <el-option
                         value="admin"
@@ -84,6 +85,7 @@
                     name="user_category_id"
                     :method="getCategories"
                     style="width: 100%;"
+                    :disabled="!$auth.check(['admin', 'manager'])"
                 >
                     <template v-slot:item="{item}">
                         <el-option
@@ -104,6 +106,8 @@
                     :method="getTelegramChats"
                     clearable
                     style="width: 100%;"
+                    placeholder="Не прив'язаний"
+                    :disabled="!$auth.check(['admin', 'manager'])"
                 >
                     <template v-slot:item="{item}">
                         <el-option
@@ -112,6 +116,48 @@
                         />
                     </template>
                 </remote-select>
+            </el-form-item>
+
+            <el-form-item
+                label="Пароль:"
+                prop="password"
+            >
+                <div class="color-text-secondary">
+                    Залиште порожнім якщо не хочете змінювати
+                </div>
+                <el-input
+                    type="password"
+                    v-model="user_clone.password"
+                    name="password"
+                    autocomplete="new-password"
+                />
+            </el-form-item>
+
+            <el-collapse-transition>
+                <el-form-item
+                    label="Повторіть пароль:"
+                    prop="password_confirmation"
+                    v-if="user_clone.password"
+                >
+                    <el-input
+                        type="password"
+                        v-model="user_clone.password_confirmation"
+                        name="password_confirmation"
+                        autocomplete="new-password"
+                    />
+                </el-form-item>
+            </el-collapse-transition>
+
+            <el-form-item
+                label="Токен швидкої авторизацій:"
+                prop="fast_auth_token"
+            >
+                <el-input
+                    type="fast_auth_token"
+                    v-model="user_clone.fast_auth_token"
+                    name="fast_auth_token"
+                    readonly
+                />
             </el-form-item>
 
             <ul v-if="errors" class="color-danger">
@@ -215,6 +261,26 @@
                         {
                             type: 'email',
                             message: 'Невірно введений email',
+                            trigger: 'blur',
+                        },
+                    ],
+                    password: [
+                        {
+                            type: 'string',
+                            min: 6,
+                            message: 'Пароль не може бути коротшим за 6 символів',
+                            trigger: 'blur',
+                        },
+                    ],
+                    password_confirmation: [
+                        {
+                            validator: (rule, val, cb) => {
+                                let {password} = this.user_clone;
+                                if (password && password !== val) {
+                                    cb(new Error('Паролі не співпадають'));
+                                }
+                            },
+                            message: 'Пароль не може бути коротшим за 6 символів',
                             trigger: 'blur',
                         },
                     ],

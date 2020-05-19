@@ -36,12 +36,26 @@
                     </g>
                 </svg>
                 <h1>Ласкаво просимо, {{ $auth.user().first_name }}</h1>
-                <el-button
-                    type="primary"
-                    @click="add()"
-                >
-                    Додати звіт
-                </el-button>
+                <div>
+                    <router-link
+                        :to="{name: 'AccountAddReport'}"
+                    >
+                        <el-button
+                            type="primary"
+                            @click="add()"
+                        >
+                            Додати звіт
+                        </el-button>
+                    </router-link>
+                    <router-link
+                        :to="{name: 'AccountEditSelf', params: {user_id: $auth.user().id}}"
+                        style="margin-left: 15px;"
+                    >
+                        <el-button>
+                            Профіль
+                        </el-button>
+                    </router-link>
+                </div>
             </div>
         </div>
 
@@ -128,12 +142,6 @@
                     });
 
                 this.loading = false;
-            },
-
-            add() {
-                this.$router.push({
-                    name: 'AccountAddReport',
-                });
             },
 
             edit(report) {

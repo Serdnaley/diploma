@@ -30,6 +30,11 @@ const router = new VueRouter({
             component: require('../pages/account/Account').default,
             children: [
                 {
+                    path: 'edit/:user_id',
+                    name: 'AccountEditSelf',
+                    component: require('../pages/users/AddEditUser').default,
+                },
+                {
                     path: 'report/add',
                     name: 'AccountAddReport',
                     component: require('../pages/reports/AddEditReport').default,
