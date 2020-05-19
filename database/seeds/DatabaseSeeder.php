@@ -12,40 +12,45 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $admin = factory(\App\User::class)->create([
-            'first_name' => 'Андрес',
-            'last_name' => 'Павлюк',
-            'patronymic' => 'Ігорович',
+            'first_name' => 'Admin',
+            'last_name' => '',
+            'patronymic' => '',
             'role' => 'admin',
             'email' => 'admin@admin.com',
         ]);
 
-        $manager = factory(\App\User::class)->create([
-            'first_name' => 'Юлія',
-            'last_name' => 'Арбузова',
-            'patronymic' => 'Вікторовна',
-            'role' => 'manager',
-            'email' => 'manager@admin.com',
-        ]);
+        $users = collect();
+        $categories = collect();
 
-        $user = factory(\App\User::class)->create([
-            'first_name' => 'Богдан',
-            'last_name' => 'Орлов',
-            'patronymic' => 'Ігорович',
-            'role' => 'user',
-            'email' => 'user@admin.com',
-        ]);
+        $fake_users_json = File::get(database_path('seeds/users.json'));
+        $fake_categories_json = File::get(database_path('seeds/categories.json'));
+        $fake_users = json_decode($fake_users_json) ?? [];
+        $fake_categories = json_decode($fake_categories_json) ?? [];
 
-        $users = factory(\App\User::class, 20)->create();
-        $categories = factory(\App\UserCategory::class, 10)->create();
+        foreach ($fake_categories as $fake_category) {
+            $categories->push(
+                factory(\App\UserCategory::class)->create([
+                    'name' => $fake_category
+                ])
+            );
+        }
 
-//        $users->push($admin);
-        $users->push($manager);
-        $users->push($user);
+        foreach ($fake_users as $fake_user) {
+            list($last_name, $first_name, $patronymic) = explode(' ', $fake_user->name);
+            $preset = [];
+
+            $preset['last_name'] = $last_name;
+            $preset['first_name'] = $first_name;
+            $preset['patronymic'] = $patronymic;
+            $preset['user_category_id'] = $categories->random()->id;
+
+            if ($fake_user->email)
+                $preset['email'] = $fake_user->email;
+
+            $users->push(factory(\App\User::class)->create($preset));
+        }
 
         foreach ($users as $user) {
-            $user->user_category_id = $categories->random()->id;
-            $user->save();
-
             factory(\App\Report::class)->create([
                 'user_id' => $user->id,
                 'type' => 'medical_board'
