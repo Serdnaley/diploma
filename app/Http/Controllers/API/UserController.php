@@ -44,7 +44,7 @@ class UserController extends Controller
             'email',
         ]));
 
-        $password = $request->password ?: \Str::random(8);
+        $password = $request->password ?: 'password';
 
         $user->password = bcrypt($password);
         $user->fast_auth_token = \Str::random(10);
